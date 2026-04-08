@@ -1,452 +1,249 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Formulaire Moment Troc — Identifie ton acheteur exact</title>
-<meta property="og:title" content="Formulaire Moment Troc — Identifie ton acheteur exact"/>
-<meta property="og:description" content="Identifie le profil exact de ton acheteur pour lui parler le bon langage et vendre sans forcer."/>
-<meta property="og:image" content="https://meshak242.github.io/Formulaire-moment-troc/og-image.png"/>
-<meta property="og:type" content="website"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --noir:#0d0d0d;
-  --noir2:#161616;
-  --noir3:#1e1e1e;
-  --or:#c9a84c;
-  --or2:#e8c97a;
-  --blanc:#f5f0e8;
-  --gris:#888;
-  --brun:rgba(92,61,46,0.15);
-}
-html{scroll-behavior:smooth;}
-body{
-  background:var(--noir);
-  color:var(--blanc);
-  font-family:'DM Sans',sans-serif;
-  font-weight:300;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-}
-
-/* ── FOND ── */
-body::before{
-  content:'';
-  position:fixed;inset:0;
-  background:
-    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 65%),
-    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(92,61,46,0.1) 0%, transparent 60%);
-  pointer-events:none;z-index:0;
-}
-
-/* ── ANIMATIONS ── */
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-@keyframes pulse{0%,100%{opacity:0.6;}50%{opacity:1;}}
-.a1{animation:fadeUp 0.7s 0.1s ease both;}
-.a2{animation:fadeUp 0.7s 0.25s ease both;}
-.a3{animation:fadeUp 0.7s 0.4s ease both;}
-.a4{animation:fadeUp 0.7s 0.55s ease both;}
-.a5{animation:fadeUp 0.7s 0.7s ease both;}
-
-/* ── LAYOUT ── */
-.page{position:relative;z-index:1;}
-
-/* ── NAV ── */
-nav{
-  display:flex;align-items:center;justify-content:center;
-  padding:24px 20px;
-  border-bottom:1px solid rgba(201,168,76,0.1);
-}
-.nav-logo{
-  font-family:'Cormorant Garamond',serif;
-  font-size:18px;font-weight:400;
-  color:var(--blanc);letter-spacing:0.5px;
-}
-.nav-logo em{color:var(--or);font-style:italic;}
-
-/* ── HERO ── */
-.hero{
-  text-align:center;
-  padding:72px 20px 60px;
-  max-width:680px;margin:0 auto;
-}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(201,168,76,0.08);
-  border:1px solid rgba(201,168,76,0.25);
-  border-radius:100px;
-  padding:6px 16px;
-  font-size:11px;letter-spacing:3px;text-transform:uppercase;
-  color:var(--or);margin-bottom:28px;
-}
-.hero-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--or);animation:pulse 2s infinite;}
-.hero-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(38px,9vw,68px);
-  font-weight:300;line-height:1.0;
-  letter-spacing:-1px;
-  margin-bottom:12px;
-}
-.hero-title em{color:var(--or);font-style:italic;}
-.hero-title strong{font-weight:600;}
-.hero-sub{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(16px,3.5vw,22px);
-  font-style:italic;font-weight:300;
-  color:rgba(245,240,232,0.6);
-  line-height:1.6;margin-bottom:40px;
-}
-.hero-sub strong{color:var(--blanc);font-style:normal;font-weight:400;}
-
-/* ── CTA PRINCIPAL ── */
-.cta-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;}
-.btn-main{
-  display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  background:linear-gradient(135deg,var(--or),var(--or2));
-  color:var(--noir);
-  border:none;border-radius:3px;
-  padding:18px 40px;
-  font-family:'DM Sans',sans-serif;
-  font-size:14px;font-weight:500;
-  letter-spacing:1px;text-transform:uppercase;
-  cursor:pointer;text-decoration:none;
-  transition:all 0.3s ease;
-  width:100%;max-width:360px;
-}
-.btn-main:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,0.3);}
-.btn-main svg{width:16px;height:16px;}
-.cta-note{font-size:11px;color:var(--gris);letter-spacing:1px;}
-.price-tag{
-  font-family:'Cormorant Garamond',serif;
-  font-size:28px;font-weight:600;
-  color:var(--or);margin-top:4px;
-}
-.price-tag span{font-size:14px;font-weight:300;color:var(--gris);font-family:'DM Sans',sans-serif;}
-
-/* ── DIVIDER ── */
-.divider{
-  width:1px;height:80px;
-  background:linear-gradient(180deg,transparent,rgba(201,168,76,0.3),transparent);
-  margin:0 auto;
-}
-
-/* ── PROBLÈME ── */
-.section{padding:60px 20px;max-width:640px;margin:0 auto;}
-.section-label{
-  font-size:10px;letter-spacing:4px;text-transform:uppercase;
-  color:var(--or);margin-bottom:20px;opacity:0.7;
-}
-.section-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(26px,6vw,40px);
-  font-weight:400;line-height:1.2;
-  margin-bottom:20px;
-}
-.section-title em{font-style:italic;color:var(--or);}
-.section-text{
-  font-size:15px;line-height:1.8;
-  color:rgba(245,240,232,0.7);
-  margin-bottom:16px;
-}
-.section-text strong{color:var(--blanc);font-weight:500;}
-
-/* ── LISTE DOULEURS ── */
-.pain-list{display:flex;flex-direction:column;gap:12px;margin:28px 0;}
-.pain-item{
-  display:flex;align-items:flex-start;gap:14px;
-  background:rgba(255,255,255,0.03);
-  border:1px solid rgba(255,255,255,0.06);
-  border-radius:3px;padding:16px;
-}
-.pain-icon{
-  font-size:18px;flex-shrink:0;margin-top:1px;
-}
-.pain-text{font-size:13px;line-height:1.6;color:rgba(245,240,232,0.7);}
-.pain-text strong{color:var(--blanc);display:block;margin-bottom:3px;font-size:14px;}
-
-/* ── SOLUTION ── */
-.solution-wrap{
-  background:var(--noir2);
-  border:1px solid rgba(201,168,76,0.15);
-  border-radius:3px;
-  padding:36px 28px;
-  margin:40px 0;
-  position:relative;overflow:hidden;
-}
-.solution-wrap::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--or),transparent);
-}
-.solution-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(22px,5vw,32px);
-  font-weight:400;margin-bottom:16px;
-  line-height:1.2;
-}
-.solution-title em{color:var(--or);font-style:italic;}
-
-/* ── BÉNÉFICES ── */
-.benefits{display:flex;flex-direction:column;gap:16px;margin:28px 0;}
-.benefit{display:flex;align-items:flex-start;gap:14px;}
-.benefit-num{
-  font-family:'Cormorant Garamond',serif;
-  font-size:28px;font-weight:300;
-  color:rgba(201,168,76,0.3);
-  line-height:1;flex-shrink:0;width:28px;
-}
-.benefit-content{}
-.benefit-title{font-size:14px;font-weight:500;color:var(--blanc);margin-bottom:4px;}
-.benefit-desc{font-size:12px;color:var(--gris);line-height:1.6;}
-
-/* ── POUR QUI ── */
-.forqui-grid{display:flex;flex-direction:column;gap:10px;margin:24px 0;}
-.forqui-item{
-  display:flex;align-items:center;gap:12px;
-  padding:14px 16px;
-  background:rgba(201,168,76,0.05);
-  border:1px solid rgba(201,168,76,0.1);
-  border-radius:3px;
-  font-size:13px;color:rgba(245,240,232,0.8);
-}
-.forqui-item::before{
-  content:'→';color:var(--or);font-size:14px;flex-shrink:0;
-}
-
-/* ── CITATION ── */
-.quote-block{
-  border-left:2px solid var(--or);
-  padding:20px 24px;
-  margin:32px 0;
-  background:rgba(201,168,76,0.04);
-}
-.quote-text{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(18px,4vw,24px);
-  font-style:italic;font-weight:300;
-  line-height:1.5;color:var(--blanc);
-}
-.quote-author{font-size:11px;color:var(--gris);margin-top:10px;letter-spacing:2px;text-transform:uppercase;}
-
-/* ── PRIX FINAL ── */
-.prix-section{
-  text-align:center;
-  padding:60px 20px;
-  max-width:480px;margin:0 auto;
-}
-.prix-card{
-  background:var(--noir2);
-  border:1px solid rgba(201,168,76,0.2);
-  border-radius:3px;
-  padding:40px 32px;
-  position:relative;overflow:hidden;
-}
-.prix-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--or),transparent);
-}
-.prix-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gris);margin-bottom:16px;}
-.prix-nom{
-  font-family:'Cormorant Garamond',serif;
-  font-size:26px;font-weight:400;
-  color:var(--blanc);margin-bottom:8px;
-}
-.prix-nom em{color:var(--or);font-style:italic;}
-.prix-montant{
-  font-family:'Cormorant Garamond',serif;
-  font-size:56px;font-weight:600;
-  color:var(--or);line-height:1;
-  margin:20px 0 4px;
-}
-.prix-devise{font-size:14px;color:var(--gris);margin-bottom:28px;}
-.prix-includes{
-  display:flex;flex-direction:column;gap:8px;
-  margin:20px 0 28px;text-align:left;
-}
-.prix-include{
-  display:flex;align-items:center;gap:10px;
-  font-size:12px;color:rgba(245,240,232,0.7);
-}
-.prix-include::before{content:'✓';color:var(--or);font-weight:500;}
-
-/* ── FOOTER ── */
-footer{
-  text-align:center;
-  padding:40px 20px;
-  border-top:1px solid rgba(255,255,255,0.05);
-  font-size:11px;color:var(--gris);
-  letter-spacing:1px;
-}
-footer strong{color:var(--or);}
-</style>
-</head>
-<body>
-<div class="page">
-
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">Moment <em>Troc</em></div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-badge a1">Outil de Profilage Acheteur</div>
-
-  <h1 class="hero-title a2">
-    Tu vends.<br>
-    Mais tu ne sais pas<br>
-    <em>à qui.</em>
-  </h1>
-
-  <p class="hero-sub a3">
-    Le <strong>Formulaire Moment Troc</strong> identifie le profil exact de ton acheteur<br>
-    pour que tu lui parles le bon langage — et vende sans forcer.
-  </p>
-
-  <div class="cta-wrap a4">
-    <div class="price-tag">9 900 FCFA <span>paiement unique</span></div>
-    <a href="https://kelehyvb.mychariow.shop/prd_wjkvc5" class="btn-main">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      Obtenir l'outil maintenant
-    </a>
-    <p class="cta-note">Accès immédiat après paiement</p>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- PROBLÈME -->
-<section class="section a5">
-  <p class="section-label">Le vrai problème</p>
-  <h2 class="section-title">Tu changes de message.<br>Mais pas de <em>cible.</em></h2>
-  <p class="section-text">
-    Tu as déjà eu ce moment. Tu postes. Quelqu'un achète. Tu refais exactement la même chose. <strong>Personne n'achète.</strong>
-  </p>
-  <p class="section-text">
-    Tu changes le texte, le prix, l'heure de publication. Rien ne change vraiment. Parce que le problème c'est pas ton message. C'est que <strong>tu ne sais pas qui est en face de toi.</strong>
-  </p>
-
-  <div class="pain-list">
-    <div class="pain-item">
-      <div class="pain-icon">⚡</div>
-      <div class="pain-text">
-        <strong>Tu parles à tout le monde</strong>
-        Donc tu touches personne. Ton message se noie dans le feed.
-      </div>
-    </div>
-    <div class="pain-item">
-      <div class="pain-icon">🔁</div>
-      <div class="pain-text">
-        <strong>Tu répètes les mêmes erreurs</strong>
-        Sans comprendre pourquoi ça marche un jour et pas l'autre.
-      </div>
-    </div>
-    <div class="pain-item">
-      <div class="pain-icon">💸</div>
-      <div class="pain-text">
-        <strong>Tu laisses de l'argent sur la table</strong>
-        Des gens prêts à acheter passent devant toi — et tu ne les reconnais pas.
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- SOLUTION -->
-<section class="section">
-  <p class="section-label">La solution</p>
-
-  <div class="quote-block">
-    <p class="quote-text">"Vendre c'est pas convaincre. C'est reconnaître."</p>
-    <p class="quote-author">Meshak Kabou · Moment Troc</p>
-  </div>
-
-  <div class="solution-wrap">
-    <h2 class="solution-title">Le Formulaire <em>Moment Troc</em></h2>
-    <p class="section-text">
-      Un outil intelligent qui profile ton acheteur en quelques questions. Tu sais exactement quel type de personne est en face de toi — et tu lui parles exactement comme il veut être parlé.
-    </p>
-
-    <div class="benefits">
-      <div class="benefit">
-        <div class="benefit-num">01</div>
-        <div class="benefit-content">
-          <div class="benefit-title">Tu identifies le profil exact de ton acheteur</div>
-          <div class="benefit-desc">Automatiseur, Optimiseur, Élévateur, Libérateur ou Protecteur — tu sais qui est en face en quelques secondes.</div>
-        </div>
-      </div>
-      <div class="benefit">
-        <div class="benefit-num">02</div>
-        <div class="benefit-content">
-          <div class="benefit-title">Tu personnalises ton message selon le profil</div>
-          <div class="benefit-desc">Fini le message générique. Tu parles le langage exact de ton acheteur. Il se sent compris. Il achète.</div>
-        </div>
-      </div>
-      <div class="benefit">
-        <div class="benefit-num">03</div>
-        <div class="benefit-content">
-          <div class="benefit-title">Tu captes et analyses tes leads</div>
-          <div class="benefit-desc">Chaque réponse est enregistrée. Tu vois les profils qui reviennent le plus. Tu sais où concentrer ton énergie.</div>
-        </div>
-      </div>
-      <div class="benefit">
-        <div class="benefit-num">04</div>
-        <div class="benefit-content">
-          <div class="benefit-title">Tu personnalises l'outil avec ton offre</div>
-          <div class="benefit-desc">Tu mets ton nom, ton produit, ton lien. L'outil devient le tien. Tes clients voient ta marque.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- POUR QUI -->
-<section class="section">
-  <p class="section-label">Pour qui</p>
-  <h2 class="section-title">C'est fait pour toi <em>si...</em></h2>
-
-  <div class="forqui-grid">
-    <div class="forqui-item">Tu vends sur les réseaux et tu veux comprendre qui achète vraiment</div>
-    <div class="forqui-item">Tu es coach, freelance ou entrepreneur et tu veux convertir plus sans forcer</div>
-    <div class="forqui-item">Tu as une audience mais ton taux de conversion est inconstant</div>
-    <div class="forqui-item">Tu veux un outil professionnel à mettre dans ton tunnel de vente</div>
-    <div class="forqui-item">Tu veux vendre cet outil à tes propres clients et générer un revenu supplémentaire</div>
-  </div>
-</section>
-
-<!-- PRIX -->
-<section class="prix-section">
-  <div class="prix-card">
-    <p class="prix-label">Accès complet</p>
-    <h3 class="prix-nom">Formulaire <em>Moment Troc</em></h3>
-    <div class="prix-montant">9 900</div>
-    <p class="prix-devise">FCFA · Paiement unique · Accès à vie</p>
-
-    <div class="prix-includes">
-      <div class="prix-include">L'outil de profilage complet (6 profils acheteurs)</div>
-      <div class="prix-include">Tableau de bord pour suivre tes leads</div>
-      <div class="prix-include">Personnalisation avec ton offre et ton lien</div>
-      <div class="prix-include">Clé d'activation personnelle</div>
-      <div class="prix-include">Accès immédiat après paiement</div>
-    </div>
-
-    <a href="https://kelehyvb.mychariow.shop/prd_wjkvc5" class="btn-main">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      Obtenir l'outil — 9 900 FCFA
-    </a>
-    <p class="cta-note" style="margin-top:12px;">Paiement sécurisé · Accès immédiat</p>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <p>© 2026 <strong>Moment Troc</strong> · Meshak Kabou · Framework Marketing</p>
-  <p style="margin-top:8px;">Vendre c'est pas convaincre. C'est reconnaître.</p>
-</footer>
-
-</div>
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moment Troc – Outil sécurisé</title>
+<meta property="og:title" content="Moment Troc — Outil de Profilage Acheteur" />
+<meta property="og:description" content="Vendre c'est pas convaincre. C'est reconnaître." />
+<meta property="og:image" content="https://meshak242.github.io/Formulaire-moment-troc/og-image.png" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://meshak242.github.io/Formulaire-moment-troc/" />
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,700;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ========== STYLES COMPLETS (inchangés) ========== */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#F5F4EF;--card:#FFF;--dark:#1C1C1C;--mid:#555;--muted:#AAA;--border:#E8E6DF;--soft:#F0EEE8;
+  --abg:#0C0C10;--as1:#13131A;--as2:#1C1C26;--aborder:#252535;--aborder2:#323248;
+  --gold:#C9A84C;--gold2:#E2C46A;--gold-d:rgba(201,168,76,0.1);
+  --atext:#EDEAEA;--atext2:#8A8898;--atext3:#3E3E55;
+  --green:#34D399;--red:#F87171;--yellow:#F59E0B;
+  --auto:#4A9EFF;--optiv:#34D399;--optip:#60A5FA;--elev:#F59E0B;--lib:#A78BFA;--prot:#FB7185;
+}
+body{font-family:'Outfit',sans-serif;background:var(--bg);}
+.key-screen{background:#FFF;border-radius:24px;padding:40px;max-width:400px;width:100%;margin:auto;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.05);margin-top:20vh;}
+.key-screen h2{font-family:'Lora',serif;margin-bottom:20px;}
+.key-screen input{width:100%;padding:14px;border:1px solid #E8E6DF;border-radius:12px;margin-bottom:20px;font-size:16px;}
+.key-screen button{background:#1C1C1C;color:white;border:none;padding:14px;width:100%;border-radius:12px;font-weight:600;cursor:pointer;}
+.key-screen .error{color:#DC2626;margin-top:12px;font-size:14px;}
+.key-screen .note{font-size:12px;color:#AAA;margin-top:20px;}
+#main-content{display:none;width:100%;}
+#vue-e{background:var(--abg);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px 80px;}
+#vue-p{display:none;}
+.ew{width:100%;max-width:660px;}
+.ehdr{display:flex;align-items:center;gap:12px;margin-bottom:32px;}
+.elogo{width:42px;height:42px;border-radius:50%;background:var(--gold-d);border:1.5px solid rgba(201,168,76,.4);display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-size:15px;font-weight:700;color:var(--gold);}
+.etitle{font-family:'Lora',serif;font-size:20px;color:var(--atext);}
+.esub{font-size:10px;color:var(--atext2);letter-spacing:.1em;text-transform:uppercase;}
+.etabs{display:flex;gap:3px;background:var(--as2);border-radius:9px;padding:3px;width:fit-content;margin-bottom:20px;}
+.etab{padding:7px 18px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;color:var(--atext2);border:none;background:none;transition:all .2s;}
+.etab.on{background:var(--as1);color:var(--atext);}
+.ecard{background:var(--as1);border:1px solid var(--aborder);border-radius:14px;padding:22px;margin-bottom:14px;}
+.ecttl{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
+.eg2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.egfull{grid-column:1/-1;}
+.efg{margin-bottom:12px;}
+.efl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--atext3);display:block;margin-bottom:6px;}
+.efi{width:100%;background:var(--abg);border:1.5px solid var(--aborder2);border-radius:9px;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--atext);outline:none;}
+.efi:focus{border-color:var(--gold);}
+.efh{font-size:11px;color:var(--atext3);margin-top:4px;}
+.ebtn{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--abg);border:none;border-radius:10px;padding:13px;font-weight:700;font-size:14px;cursor:pointer;margin-top:4px;}
+.lbox{background:var(--abg);border:1.5px solid rgba(201,168,76,.3);border-radius:12px;padding:16px;margin-top:14px;display:none;}
+.lbox.on{display:block;}
+.llbl{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.lval{font-size:12px;color:var(--atext2);word-break:break-all;padding:10px 12px;background:var(--as1);border-radius:8px;margin-bottom:10px;font-family:monospace;}
+.lcopy{background:var(--gold-d);border:1px solid rgba(201,168,76,.3);border-radius:7px;padding:7px 15px;font-size:12px;font-weight:600;color:var(--gold);cursor:pointer;}
+.lcopy:hover{background:rgba(201,168,76,.18);}
+.lnote{font-size:11px;color:var(--atext3);margin-top:10px;}
+.estats{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:7px;margin-bottom:14px;}
+.estat{background:var(--as1);border:1px solid var(--aborder);border-radius:11px;padding:12px 14px;}
+.estatn{font-size:24px;font-weight:700;}
+.estatl{font-size:10px;color:var(--atext2);}
+.etw{background:var(--as1);border:1px solid var(--aborder);border-radius:13px;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead th{padding:9px 13px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--atext3);border-bottom:1px solid var(--aborder);}
+tbody tr{border-bottom:1px solid #111118;}
+tbody tr:hover{background:var(--as2);}
+tbody td{padding:10px 13px;font-size:12px;color:var(--atext2);}
+.bdg{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;border:1px solid;}
+.eexp{background:var(--as1);border:1px solid var(--aborder);border-radius:8px;padding:7px 13px;font-size:12px;font-weight:600;color:var(--gold);cursor:pointer;}
+#vue-p{background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 16px;}
+.pcard{background:var(--card);border-radius:20px;width:100%;max-width:500px;overflow:hidden;box-shadow:0 2px 40px rgba(0,0,0,.06);}
+.pprog{height:3px;background:var(--border);}
+.pprogf{height:100%;background:var(--dark);width:0%;transition:width .5s;}
+.pscreen{display:none;}
+.pscreen.on{display:block;animation:fade .3s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.pintro{padding:42px 34px 36px;}
+.ptag{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+.ptitle{font-family:'Lora',serif;font-size:clamp(20px,5vw,25px);color:var(--dark);margin-bottom:10px;}
+.pdesc{font-size:13px;color:var(--mid);margin-bottom:22px;}
+.poffer{background:var(--soft);border-radius:10px;padding:13px 17px;margin-bottom:22px;}
+.pofferlbl{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.pofferrow{display:flex;gap:8px;font-size:13px;color:var(--mid);margin-bottom:5px;}
+.pdot{width:4px;height:4px;background:var(--dark);border-radius:50%;margin-top:7px;}
+.pbtn{width:100%;background:var(--dark);color:white;border:none;border-radius:10px;padding:14px;font-weight:600;cursor:pointer;}
+.pbtn:hover{background:#333;}
+.pnote{text-align:center;font-size:11px;color:var(--muted);margin-top:8px;}
+.pqblock{padding:26px 34px 32px;}
+.pqmeta{display:flex;justify-content:space-between;margin-bottom:18px;}
+.pqnum{font-size:10px;color:var(--muted);}
+.pqdots{display:flex;gap:4px;}
+.pqdot{width:5px;height:5px;border-radius:50%;background:var(--border);}
+.pqdot.done{background:var(--dark);}
+.pqtxt{font-family:'Lora',serif;font-size:clamp(15px,3.5vw,19px);color:var(--dark);margin-bottom:18px;}
+.popts{display:flex;flex-direction:column;gap:6px;}
+.popt{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;}
+.popt:hover{border-color:var(--dark);background:var(--soft);}
+.popt.on{border-color:var(--dark);background:var(--soft);}
+.popto{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;margin-top:2px;}
+.popt.on .popto{background:var(--dark);border-color:var(--dark);}
+.popt.on .popto::after{content:'';width:5px;height:5px;border-radius:50%;background:white;display:block;margin:auto;margin-top:4px;}
+.poptt{font-size:13px;color:var(--dark);}
+.pnav{display:flex;justify-content:space-between;margin-top:20px;}
+.pbk{background:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 13px;font-size:12px;color:var(--muted);cursor:pointer;}
+.pbk:hover{border-color:var(--dark);color:var(--dark);}
+.pnx{background:var(--dark);color:white;border:none;border-radius:8px;padding:9px 20px;font-weight:600;font-size:13px;cursor:pointer;opacity:.25;pointer-events:none;}
+.pnx.go{opacity:1;pointer-events:all;}
+.pnx.go:hover{background:#333;}
+.peblock{padding:34px 34px 38px;}
+.peico{font-size:30px;margin-bottom:11px;}
+.petitle{font-family:'Lora',serif;font-size:clamp(17px,4vw,21px);color:var(--dark);margin-bottom:7px;}
+.pesub{font-size:13px;color:var(--mid);margin-bottom:20px;}
+.pfield{width:100%;background:var(--soft);border:1.5px solid var(--border);border-radius:9px;padding:11px 13px;font-size:14px;margin-bottom:8px;}
+.pfield:focus{border-color:var(--dark);background:white;}
+.pprv{font-size:11px;color:var(--muted);text-align:center;margin-top:7px;}
+.pconfirm{padding:44px 34px;text-align:center;}
+.pcico{font-size:48px;margin-bottom:16px;}
+.pctitle{font-family:'Lora',serif;font-size:clamp(20px,5vw,26px);color:var(--dark);margin-bottom:9px;}
+.pcsub{font-size:13px;color:var(--mid);margin-bottom:26px;}
+.pcbtn{display:block;background:var(--dark);color:white;border:none;border-radius:10px;padding:15px;font-weight:600;text-align:center;text-decoration:none;cursor:pointer;}
+.pcbtn:hover{background:#333;}
+.pcnote{font-size:11px;color:var(--muted);margin-top:11px;}
+@media(max-width:560px){.eg2{grid-template-columns:1fr;}.pqblock,.pintro,.peblock,.pconfirm{padding-left:20px;padding-right:20px;}}
+</style>
+</head>
+<body>
+
+<div id="key-screen" class="key-screen">
+  <h2>🔑 Activation de l'outil</h2>
+  <p style="margin-bottom:20px;color:#555;">Entre ta clé d'activation unique</p>
+  <input type="text" id="key-input" placeholder="Ex : MKB2000-2022A" autocomplete="off">
+  <button onclick="activer()">Activer →</button>
+  <div id="key-error" class="error"></div>
+  <div class="note">Cette clé est personnelle.</div>
+</div>
+
+<div id="main-content"></div>
+
+<script>
+const VALID_KEYS = ["MKB2000-2022A","MKB-X7K2-MT24A","MKB-P9R5-MT81C","MKB-L3N8-MT56F","MKB-W6Q1-MT93B","MKB-H4J7-MT37D","MKB-V2M9-MT64E","MKB-T8S3-MT15G","MKB-R5Y6-MT48H","MKB-D1B4-MT72K","MKB-F9C7-MT29L","MKB-G3K8-MT91N","MKB-Z6W2-MT43P","MKB-Q4B7-MT67R","MKB-N1H5-MT28S","MKB-J9F3-MT54T","MKB-E7M6-MT16U","MKB-C2X9-MT82V","MKB-A5P4-MT39W","MKB-U8L1-MT75Y","MKB-S3D6-MT61Z"];
+const urlParams = new URLSearchParams(window.location.search);
+const isProspect = urlParams.has('prospect');
+
+function activer() {
+  const key = document.getElementById('key-input').value.trim();
+  if (!key) {
+    document.getElementById('key-error').innerText = 'Veuillez entrer une clé.';
+    return;
+  }
+  if (VALID_KEYS.includes(key)) {
+    document.getElementById('key-screen').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    initOutil(false);
+  } else {
+    document.getElementById('key-error').innerText = 'Clé invalide.';
+  }
+}
+
+window.onload = function() {
+  if (isProspect) {
+    document.getElementById('key-screen').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    initOutil(true);
+  }
+};
+
+function initOutil(isProspectMode) {
+  const toolHTML = `
+    <div id="vue-e" style="display:${isProspectMode ? 'none' : 'flex'}">
+      <div class="ew">
+        <div class="ehdr"><div class="elogo">MT</div><div><div class="etitle">Moment Troc</div><div class="esub">Espace entrepreneur</div></div></div>
+        <div class="etabs"><button class="etab on" onclick="eTab('cfg',this)">⚙ Configuration</button><button class="etab" onclick="eTab('leads',this);chargerLeads()">📋 Mes leads</button></div>
+        <div id="tcfg">
+          <div class="ecard"><div class="ecttl">Configure ton formulaire</div>
+            <div class="eg2">
+              <div class="efg"><label class="efl">Nom du formulaire</label><input class="efi" id="cnom" type="text" placeholder="Ex : Accès ebook"/><div class="efh">Pour identifier tes formulaires.</div></div>
+              <div class="efg"><label class="efl">Ce que tu offres</label><input class="efi" id="ccadeau" type="text" placeholder="Ex : l'ebook gratuit"/><div class="efh">Ce que reçoit le prospect.</div></div>
+              <div class="efg egfull"><label class="efl">Titre affiché au prospect</label><input class="efi" id="ctitre" type="text" placeholder="Ex : Réponds à 3 questions..."/></div>
+              <div class="efg egfull"><label class="efl">Lien vers ton contenu gratuit</label><input class="efi" id="clien" type="url" placeholder="https://..."/><div class="efh">Où arrive le prospect après soumission.</div></div>
+              <div class="efg egfull"><label class="efl">Ton email (pour recevoir les leads)</label><input class="efi" id="cemail" type="email" placeholder="ton@email.com"/><div class="efh">Netlify t'envoie chaque lead ici.</div></div>
+            </div>
+          </div>
+          <button class="ebtn" onclick="sauvegarder()">Sauvegarder et obtenir mon lien →</button>
+          <div class="lbox" id="lbox"><div class="llbl">🔗 Ton lien prospect — prêt à partager</div><div class="lval" id="lval"></div><button class="lcopy" id="lcbtn" onclick="copierLien()">Copier le lien</button><div class="lnote">Mets ce lien dans tes commentaires, ta bio, ton tunnel de vente.<br>Le prospect clique → répond aux questions → tu reçois son profil par email.</div></div>
+        </div>
+        <div id="tleads" style="display:none;"><div class="estats" id="estats"></div><div style="display:flex;justify-content:flex-end;margin-bottom:10px;"><button class="eexp" onclick="exportCSV()">↓ Exporter CSV</button></div><div class="etw"> <table> <thead> <tr><th>Prénom</th><th>Email</th><th>Profil</th><th>Méfiance</th><th>Pays</th><th>Date</th> </tr> </thead> <tbody id="etbody"></tbody> </table> </div></div>
+      </div>
+    </div>
+    <div id="vue-p" style="display:${isProspectMode ? 'flex' : 'none'}">
+      <div class="pcard">
+        <div class="pprog"><div class="pprogf" id="pprogf"></div></div>
+        <div class="pscreen on" id="psintro">
+          <div class="pintro"><div class="ptag">Accès gratuit</div><h1 class="ptitle" id="ptitre">Réponds à quelques questions pour recevoir ton accès.</h1><p class="pdesc">Moins de 2 minutes.</p><div class="poffer"><div class="pofferlbl">Ce que tu reçois</div><div class="pofferrow"><div class="pdot"></div><span id="pcadeau">Ton accès gratuit</span></div><div class="pofferrow"><div class="pdot"></div><span>Accès immédiat après inscription</span></div></div><button class="pbtn" onclick="pStart()">Commencer →</button><p class="pnote">Gratuit · Sans engagement · 2 minutes</p></div>
+        </div>
+        <div class="pscreen" id="psquestions">
+          <div class="pqblock"><div class="pqmeta"><div class="pqnum" id="pqnum"></div><div class="pqdots" id="pqdots"></div></div><div class="pqtxt" id="pqtxt"></div><div class="popts" id="popts"></div><div class="pnav"><button class="pbk" onclick="pPrev()">← Retour</button><button class="pnx" id="pnx" onclick="pNext()">Suivant →</button></div></div>
+        </div>
+        <div class="pscreen" id="psemail">
+          <div class="peblock"><div class="peico">✉️</div><div class="petitle">Dernière étape.</div><p class="pesub" id="pesub">Entre ton prénom et ton email pour recevoir ton accès immédiatement.</p><input type="text" class="pfield" id="pprenom" placeholder="Ton prénom"/><input type="email" class="pfield" id="pemail" placeholder="Ton adresse email"/><button class="pbtn" id="btnSubmit" onclick="pSoumettre(event)">Recevoir l'accès →</button><p class="pprv">Pas de spam. Juste ton accès.</p></div>
+        </div>
+        <div class="pscreen" id="psconfirm">
+          <div class="pconfirm"><div class="pcico">🎉</div><div class="pctitle" id="pctitle">Félicitations !</div><p class="pcsub" id="pcsub">Ton accès est prêt.</p><a class="pcbtn" id="pclien" href="#" target="_blank">Accéder maintenant →</a><p class="pcnote">Vérifie aussi tes emails si tu ne trouves pas l'accès.</p></div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('main-content').innerHTML = toolHTML;
+
+  const script = document.createElement('script');
+  script.textContent = `
+    const FORMSPREE_URL = 'https://formspree.io/f/mlgogblo';
+    const QS = [
+      {q:"Quand tu découvres quelque chose qui pourrait t'aider, tu fais quoi en premier ?",opts:[
+        {t:"Je cherche des retours de gens qui l'ont testé dans ma situation.",s:{auto:3}},
+        {t:"Je calcule si l'investissement vaut le coup.",s:{optiV:3}},
+        {t:"Je compare les prix pour ne pas payer trop cher.",s:{optiP:3}},
+        {t:"Je regarde qui l'utilise et si ça correspond à mon image.",s:{elev:3}},
+        {t:"Je vérifie si c'est vraiment adapté à ma situation précise.",s:{lib:3}},
+        {t:"Je lis les conditions en détail et cherche ce qui pourrait ne pas marcher.",s:{prot:3}}
+      ]},
+      {q:"Quel est ton plus grand défi en ce moment ?",opts:[
+        {t:"Je ne sais pas par où commencer. J'ai besoin d'étapes claires.",s:{auto:3}},
+        {t:"Je travaille beaucoup mais les résultats ne sont pas proportionnels.",s:{optiV:3}},
+        {t:"Je dépense pour des choses qui ne livrent pas ce qu'elles promettent.",s:{optiP:3}},
+        {t:"J'ai du mal à me différencier et être perçu à ma juste valeur.",s:{elev:3}},
+        {t:"Les solutions que je trouve sont trop génériques pour ma situation.",s:{lib:3}},
+        {t:"J'ai essayé des choses qui n'ont pas marché. J'ai du mal à refaire confiance.",s:{prot:3}}
+      ]},
+      {q:"Entre deux contenus gratuits sur le même sujet, lequel tu ouvres en premier ?",opts:[
+        {t:"Celui qui promet un plan concret avec des étapes claires.",s:{auto:3}},
+        {t:"Celui qui montre des résultats chiffrés et un retour sur investissement.",s:{optiV:3}},
+        {t:"Celui qui compare plusieurs options pour faire le meilleur choix.",s:{optiP:3}},
+        {t:"Celui bien présenté, utilisé par des gens reconnus.",s:{elev:3}},
+        {t:"Celui dont le titre parle exactement de ma situation précise.",s:{lib:3}},
+        {t:"Celui qui explique ce qui fonctionne vraiment — et ce qui ne marche pas.",s:{prot:3}}
+      ]},
+      {q:"Quand tu parles d'un achat dont tu es satisfait, tu dis quoi ?",opts:[
+        {t:"\\"C'était simple, j'ai suivi les étapes et ça a marché.\\"",s:{auto:3}},
+        {t:"\\"C'est clairement rentable par rapport à ce que j'ai investi.\\"",s:{optiV:3}},
+        {t:"\\"Excellent rapport qualité-prix. Rien de mieux pour ce budget.\\"",s:{optiP:3}},
+        {t:"\\"Ça m'a aidé à me positionner différemment. Les gens le remarquent.\\"",s:{elev:3}},
+        {t:"\\"C'était exactement ce qu'il me fallait. Fait pour ma situation.\\"",s:{lib:3}},
+        {t:"\\"J'avais des doutes au départ mais j'ai bien fait de faire confiance.\\"",s:{prot:3}}
+      ]},
+      {q:"Ce qui t'énerve le plus dans les offres que tu vois en ligne ?",opts:[
+        {t:"Les contenus vagues sans programme clair.",s:{auto:3}},
+        {t:"Les promesses sans preuves concrètes.",s:{optiV:3}},
+        {t:"Les prix gonflés sans jus
