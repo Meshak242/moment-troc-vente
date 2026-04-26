@@ -1,444 +1,1374 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moment Troc · Studio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-  <style>
-    /* ========== STYLES COMPLETS ========== */
-    :root { --black: #080808; --gold: #C9A84C; --gold-dim: #8a6e2f; --gold-glow: rgba(201,168,76,0.15); --white: #F0EBE0; --white-dim: rgba(240,235,224,0.4); --white-faint: rgba(240,235,224,0.08); --border: rgba(201,168,76,0.2); --border-strong: rgba(201,168,76,0.5); }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { background: var(--black); color: var(--white); font-family: 'Fraunces', Georgia, serif; min-height: 100vh; overflow-x: hidden; }
-    body::before { content:''; position:fixed; inset:0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1000; opacity:0.4; }
-    header { padding: 40px 32px 0; display: flex; align-items: center; justify-content: space-between; }
-    .logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 4px; color: var(--gold); }
-    .logo span { color: var(--white-dim); font-size: 12px; font-family: 'DM Mono', monospace; letter-spacing: 2px; display: block; margin-top: -4px; }
-    main { max-width: 760px; margin: 0 auto; padding: 60px 24px 120px; }
-    .hero { text-align: center; margin-bottom: 64px; animation: fadeUp 0.8s ease both; }
-    .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 12vw, 88px); letter-spacing: 6px; line-height: 0.9; background: linear-gradient(135deg, var(--gold) 0%, #f0d080 50%, var(--gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .hero p { margin-top: 20px; font-size: 15px; font-weight: 300; font-style: italic; color: var(--white-dim); letter-spacing: 0.5px; }
-    .steps { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 52px; animation: fadeUp 0.8s 0.1s ease both; }
-    .step-dot { display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; }
-    .step-dot .num { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--white-dim); transition: all 0.4s ease; }
-    .step-dot .label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--white-dim); text-transform: uppercase; transition: all 0.4s ease; }
-    .step-dot.active .num { border-color: var(--gold); color: var(--gold); background: var(--gold-glow); box-shadow: 0 0 20px var(--gold-glow); }
-    .step-dot.active .label { color: var(--gold); }
-    .step-dot.done .num { border-color: var(--gold-dim); background: rgba(201,168,76,0.1); color: var(--gold-dim); }
-    .step-line { width: 60px; height: 1px; background: var(--border); margin: 0 8px; margin-bottom: 28px; transition: background 0.4s ease; }
-    .step-line.done { background: var(--gold-dim); }
-    .card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 2px; padding: 40px 36px; margin-bottom: 24px; animation: fadeUp 0.6s ease both; position: relative; overflow: hidden; }
-    .card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity:0.4; }
-    .card-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; }
-    .field { margin-bottom: 28px; }
-    .field label { display: block; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--white-dim); margin-bottom: 10px; }
-    .field label .optional { color: var(--gold-dim); font-size: 9px; margin-left: 8px; }
-    textarea, input[type="text"] { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 2px; color: var(--white); font-family: 'Fraunces', serif; font-size: 14px; font-weight: 300; padding: 14px 16px; resize: vertical; outline: none; transition: border-color 0.3s ease, box-shadow 0.3s ease; line-height: 1.7; }
-    textarea:focus, input[type="text"]:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-glow); }
-    textarea::placeholder, input::placeholder { color: rgba(240,235,224,0.2); font-style: italic; }
-    .etapes-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .etape-btn { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 2px; padding: 14px 16px; cursor: pointer; transition: all 0.3s ease; text-align: left; position: relative; overflow: hidden; }
-    .etape-btn:hover { border-color: var(--gold-dim); background: rgba(201,168,76,0.05); }
-    .etape-btn.selected { border-color: var(--gold); background: var(--gold-glow); }
-    .etape-btn.selected::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background: var(--gold); opacity:0.6; }
-    .etape-num { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--gold-dim); letter-spacing: 2px; margin-bottom: 4px; }
-    .etape-name { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 2px; color: var(--white); transition: color 0.3s; }
-    .etape-btn.selected .etape-name { color: var(--gold); }
-    .etape-desc { font-family: 'Fraunces', serif; font-size: 11px; font-style: italic; font-weight: 300; color: var(--white-dim); margin-top: 4px; line-height: 1.4; }
-    .profils-detected { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
-    .profil-tag { border: 1px solid var(--gold); padding: 8px 16px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); background: var(--gold-glow); border-radius: 2px; animation: fadeUp 0.4s ease both; }
-    .profil-score { display: block; font-size: 9px; color: var(--gold-dim); margin-top: 2px; letter-spacing: 1px; }
-    .profil-reasoning { margin-top: 20px; padding: 16px; border-left: 2px solid var(--gold-dim); background: rgba(201,168,76,0.04); }
-    .profil-reasoning p { font-size: 13px; font-weight: 300; font-style: italic; color: var(--white-dim); line-height: 1.7; }
-    .btn-primary { width: 100%; padding: 18px; background: transparent; border: 1px solid var(--gold); color: var(--gold); font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 4px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; border-radius: 2px; }
-    .btn-primary::before { content:''; position:absolute; inset:0; background: var(--gold); transform: translateX(-100%); transition: transform 0.3s ease; }
-    .btn-primary:hover::before { transform: translateX(0); }
-    .btn-primary:hover { color: var(--black); }
-    .btn-primary span { position: relative; z-index: 1; }
-    .btn-primary:disabled { opacity: 0.3; cursor: not-allowed; }
-    .btn-primary:disabled::before { display: none; }
-    .btn-primary:disabled:hover { color: var(--gold); }
-    .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--white-dim); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; padding: 12px 20px; cursor: pointer; transition: all 0.3s ease; border-radius: 2px; text-transform: uppercase; }
-    .btn-secondary:hover { border-color: var(--white-dim); color: var(--white); }
-    .loading { display: flex; align-items: center; gap: 12px; padding: 20px 0; color: var(--white-dim); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; }
-    .loading-dots { display: flex; gap: 4px; }
-    .loading-dots span { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); animation: pulse 1.2s infinite; }
-    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-    .posts-container { display: flex; flex-direction: column; gap: 0; }
-    .post-item { border: 1px solid var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 20px; animation: fadeUp 0.5s ease both; }
-    .post-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: rgba(201,168,76,0.04); border-bottom: 1px solid var(--border); }
-    .post-meta { display: flex; align-items: center; gap: 16px; }
-    .post-day { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; }
-    .post-etape-tag { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; color: var(--white-dim); border: 1px solid var(--border); padding: 2px 8px; border-radius: 2px; text-transform: uppercase; }
-    .post-archetype { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; color: var(--gold-dim); text-transform: uppercase; }
-    .post-body { padding: 24px 20px; white-space: pre-wrap; font-family: 'Fraunces', serif; font-size: 14px; font-weight: 300; line-height: 1.9; color: var(--white); }
-    .post-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; }
-    .copy-btn { background: transparent; border: none; color: var(--white-dim); font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: color 0.3s; padding: 4px 0; }
-    .copy-btn:hover { color: var(--gold); }
-    .copy-btn.copied { color: var(--gold); }
-    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 20px; }
-    .cal-day { aspect-ratio: 1; border: 1px solid var(--border); border-radius: 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--white-dim); position: relative; }
-    .cal-day.has-post { border-color: var(--gold); background: var(--gold-glow); color: var(--gold); cursor: pointer; }
-    .cal-day.has-post:hover { background: rgba(201,168,76,0.2); }
-    .cal-post-num { font-size: 8px; color: var(--gold-dim); margin-top: 2px; }
-    .divider { display: flex; align-items: center; gap: 16px; margin: 32px 0; }
-    .divider::before, .divider::after { content:''; flex:1; height:1px; background: var(--border); }
-    .divider span { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--gold-dim); text-transform: uppercase; }
-    .hidden { display: none !important; }
-    @keyframes fadeUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
-    @keyframes pulse { 0%, 80%, 100% { opacity:0.2; transform: scale(0.8); } 40% { opacity:1; transform: scale(1); } }
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
-    @media (max-width: 600px) { main { padding: 40px 16px 80px; } .card { padding: 28px 20px; } .etapes-grid { grid-template-columns: 1fr; } .calendar-grid { grid-template-columns: repeat(5, 1fr); } .step-line { width: 30px; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moment Troc · Studio</title>
+<meta property="og:title" content="Moment Troc Studio">
+<meta property="og:description" content="L'agent qui lit le marché. Calibré sur ta cible.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Archivo+Black&display=swap">
+<style>
+:root {
+  --ink:#0A0A0A;
+  --paper:#F2EDE4;
+  --paper2:#E8E2D6;
+  --rust:#C4440A;
+  --rust-dim:rgba(196,68,10,0.15);
+  --rust-line:rgba(196,68,10,0.3);
+  --ink-dim:rgba(10,10,10,0.35);
+  --ink-mid:rgba(10,10,10,0.6);
+  --white:#FDFAF5;
+  --line:rgba(10,10,10,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body {
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Space Mono',monospace;
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+
+/* GRAIN */
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:9000;
+}
+
+/* HORIZONTAL RULES DECORATIFS */
+.hr-thick{height:3px;background:var(--ink);margin:0;}
+.hr-thin{height:1px;background:var(--line);margin:0;}
+.hr-rust{height:2px;background:var(--rust);margin:0;}
+
+/* LOADER */
+#loader {
+  position:fixed;inset:0;background:var(--ink);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:99999;
+}
+.loader-title {
+  font-family:'Archivo Black',sans-serif;
+  font-size:clamp(32px,8vw,64px);
+  letter-spacing:-1px;
+  color:var(--paper);
+  line-height:1;
+  text-align:center;
+}
+.loader-sub {
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  letter-spacing:4px;
+  color:rgba(242,237,228,0.4);
+  margin-top:16px;
+  text-transform:uppercase;
+}
+.loader-bar {
+  width:200px;height:1px;
+  background:rgba(242,237,228,0.15);
+  margin-top:32px;
+  position:relative;
+  overflow:hidden;
+}
+.loader-bar::after {
+  content:'';
+  position:absolute;
+  left:-100%;top:0;
+  width:100%;height:100%;
+  background:var(--rust);
+  animation:barLoad 1.6s ease forwards;
+}
+@keyframes barLoad{to{left:0;}}
+
+/* KEY GATE */
+#keygate {
+  position:fixed;inset:0;background:var(--ink);
+  display:none;align-items:center;justify-content:center;
+  z-index:9999;padding:24px;
+}
+.gate-inner {
+  max-width:420px;width:100%;
+  border-top:3px solid var(--paper);
+  border-bottom:1px solid rgba(242,237,228,0.2);
+  padding:48px 40px;
+}
+.gate-label {
+  font-family:'Space Mono',monospace;
+  font-size:9px;letter-spacing:4px;
+  color:rgba(242,237,228,0.4);
+  text-transform:uppercase;margin-bottom:12px;
+}
+.gate-title {
+  font-family:'Playfair Display',serif;
+  font-size:48px;font-weight:900;font-style:italic;
+  color:var(--paper);line-height:0.95;margin-bottom:40px;
+}
+.gate-input {
+  width:100%;background:transparent;
+  border:none;border-bottom:1px solid rgba(242,237,228,0.3);
+  color:var(--paper);
+  font-family:'Space Mono',monospace;
+  font-size:18px;letter-spacing:6px;
+  padding:12px 0;outline:none;
+  text-transform:uppercase;
+  transition:border-color 0.3s;
+}
+.gate-input:focus{border-bottom-color:var(--rust);}
+.gate-input::placeholder{color:rgba(242,237,228,0.2);font-size:12px;letter-spacing:3px;}
+#gate-err {
+  font-size:10px;letter-spacing:1px;
+  color:var(--rust);margin-top:8px;
+  min-height:14px;font-family:'Space Mono',monospace;
+}
+.gate-btn {
+  margin-top:24px;width:100%;
+  background:var(--rust);border:none;
+  color:var(--paper);
+  font-family:'Archivo Black',sans-serif;
+  font-size:14px;letter-spacing:3px;
+  padding:16px;cursor:pointer;
+  text-transform:uppercase;
+  transition:opacity 0.2s;
+}
+.gate-btn:hover{opacity:0.85;}
+
+/* MASTHEAD */
+.masthead {
+  border-bottom:3px solid var(--ink);
+  padding:20px 32px 16px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+}
+.masthead-title {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,6vw,48px);
+  font-weight:900;line-height:1;
+  letter-spacing:-1px;
+}
+.masthead-title em{font-style:italic;color:var(--rust);}
+.masthead-meta {
+  font-family:'Space Mono',monospace;
+  font-size:9px;letter-spacing:2px;
+  color:var(--ink-dim);
+  text-align:right;
+  text-transform:uppercase;
+  line-height:1.8;
+}
+
+/* MODE NAV — NEWSPAPER SECTION TABS */
+.section-nav {
+  border-bottom:1px solid var(--line);
+  display:flex;overflow-x:auto;
+  padding:0 32px;
+  gap:0;
+}
+.section-tab {
+  font-family:'Space Mono',monospace;
+  font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--ink-dim);
+  padding:12px 20px;
+  cursor:pointer;
+  border:none;background:none;
+  border-bottom:2px solid transparent;
+  transition:all 0.25s;white-space:nowrap;
+}
+.section-tab:hover{color:var(--ink);}
+.section-tab.on{color:var(--rust);border-bottom-color:var(--rust);}
+
+/* MAIN */
+main{max-width:860px;margin:0 auto;padding:40px 28px 120px;}
+
+/* COLUMN LAYOUT */
+.col-layout{display:grid;grid-template-columns:1fr 280px;gap:40px;}
+.col-main{}
+.col-aside{border-left:1px solid var(--line);padding-left:32px;}
+
+/* SECTION TITLE */
+.section-eyebrow {
+  font-family:'Space Mono',monospace;
+  font-size:8px;letter-spacing:4px;
+  text-transform:uppercase;
+  color:var(--rust);
+  margin-bottom:6px;
+}
+.section-headline {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,5vw,44px);
+  font-weight:900;line-height:1.05;
+  letter-spacing:-0.5px;
+  margin-bottom:8px;
+}
+.section-headline em{font-style:italic;}
+.section-deck {
+  font-family:'Space Mono',monospace;
+  font-size:11px;color:var(--ink-mid);
+  line-height:1.7;margin-bottom:32px;
+  max-width:520px;
+}
+
+/* FIELDS */
+.field{margin-bottom:24px;}
+.field-label {
+  font-family:'Space Mono',monospace;
+  font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--ink-dim);
+  margin-bottom:8px;
+  display:flex;align-items:center;gap:8px;
+}
+.field-label .opt{
+  font-size:8px;letter-spacing:1px;
+  color:var(--rust);opacity:0.6;
+}
+textarea,input[type=text] {
+  width:100%;
+  background:var(--white);
+  border:1px solid var(--line);
+  border-top:2px solid var(--ink);
+  color:var(--ink);
+  font-family:'Space Mono',monospace;
+  font-size:13px;
+  padding:14px 16px;
+  resize:vertical;outline:none;
+  transition:border-color 0.25s;
+  line-height:1.7;
+}
+textarea:focus,input:focus{border-color:var(--rust);border-top-color:var(--rust);}
+textarea::placeholder,input::placeholder{color:var(--ink-dim);font-style:italic;font-size:12px;}
+
+/* SELECTOR GRID */
+.sel-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.sel-grid.cols3{grid-template-columns:repeat(3,1fr);}
+.sel-item {
+  background:var(--white);
+  border:1px solid var(--line);
+  border-top:2px solid var(--ink);
+  padding:14px 16px;
+  cursor:pointer;
+  transition:all 0.2s;
+  text-align:left;
+  position:relative;
+}
+.sel-item:hover{border-top-color:var(--rust);}
+.sel-item.on{
+  background:var(--ink);
+  border-color:var(--ink);
+  border-top-color:var(--rust);
+}
+.sel-item-name {
+  font-family:'Archivo Black',sans-serif;
+  font-size:13px;letter-spacing:1px;
+  color:var(--ink);
+  text-transform:uppercase;
+  transition:color 0.2s;
+}
+.sel-item.on .sel-item-name{color:var(--paper);}
+.sel-item-desc {
+  font-family:'Space Mono',monospace;
+  font-size:9px;color:var(--ink-dim);
+  margin-top:4px;line-height:1.4;
+  transition:color 0.2s;
+}
+.sel-item.on .sel-item-desc{color:rgba(242,237,228,0.5);}
+
+/* BUTTONS */
+.btn-primary {
+  width:100%;
+  background:var(--ink);border:none;
+  color:var(--paper);
+  font-family:'Archivo Black',sans-serif;
+  font-size:13px;letter-spacing:3px;
+  padding:18px 24px;
+  cursor:pointer;text-transform:uppercase;
+  position:relative;overflow:hidden;
+  transition:background 0.25s;
+  margin-top:8px;
+}
+.btn-primary::after {
+  content:'';
+  position:absolute;bottom:0;left:0;
+  width:0;height:2px;
+  background:var(--rust);
+  transition:width 0.3s;
+}
+.btn-primary:hover{background:#1a1a1a;}
+.btn-primary:hover::after{width:100%;}
+.btn-primary:disabled{opacity:0.3;cursor:not-allowed;}
+.btn-primary:disabled::after{display:none;}
+.btn-ghost {
+  background:transparent;
+  border:1px solid var(--line);
+  border-top:2px solid var(--ink);
+  color:var(--ink);
+  font-family:'Space Mono',monospace;
+  font-size:10px;letter-spacing:2px;
+  padding:12px 20px;
+  cursor:pointer;text-transform:uppercase;
+  transition:all 0.2s;
+}
+.btn-ghost:hover{border-top-color:var(--rust);color:var(--rust);}
+.btn-row{display:flex;gap:10px;margin-top:8px;}
+
+/* LOADING */
+.loading{padding:24px 0;}
+.loading-head {
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-style:italic;
+  color:var(--ink-mid);
+  margin-bottom:16px;
+}
+.loading-steps{display:flex;flex-direction:column;gap:6px;}
+.loading-step {
+  font-family:'Space Mono',monospace;
+  font-size:10px;letter-spacing:1px;
+  color:var(--ink-dim);
+  display:flex;align-items:center;gap:10px;
+}
+.loading-step .dot {
+  width:6px;height:6px;
+  border-radius:50%;
+  background:var(--rust);
+  animation:pulse 1.2s infinite;
+}
+.loading-step:nth-child(2) .dot{animation-delay:0.2s;}
+.loading-step:nth-child(3) .dot{animation-delay:0.4s;}
+.loading-status{
+  font-family:'Space Mono',monospace;
+  font-size:10px;color:var(--rust);
+  margin-top:12px;letter-spacing:1px;
+}
+
+/* PROFIL TAGS */
+.profil-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+.profil-tag {
+  font-family:'Archivo Black',sans-serif;
+  font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;
+  background:var(--ink);
+  color:var(--paper);
+  padding:5px 12px;
+  border-top:2px solid var(--rust);
+}
+.reasoning {
+  font-family:'Playfair Display',serif;
+  font-size:14px;font-style:italic;
+  color:var(--ink-mid);
+  line-height:1.8;
+  padding:16px;
+  border-left:3px solid var(--rust);
+  background:var(--white);
+  margin-top:12px;
+}
+
+/* EVAL BAR */
+.eval-bar {
+  display:flex;align-items:center;gap:10px;
+  padding:10px 16px;
+  background:var(--ink);
+  color:var(--paper);
+  font-family:'Space Mono',monospace;
+  font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:20px;
+  border-top:2px solid var(--rust);
+}
+
+/* POST ITEMS */
+.post-item {
+  background:var(--white);
+  border:1px solid var(--line);
+  border-top:3px solid var(--ink);
+  margin-bottom:20px;
+  animation:fadeUp 0.4s ease both;
+  position:relative;
+}
+.post-item:hover{border-top-color:var(--rust);}
+.post-header {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 18px;
+  border-bottom:1px solid var(--line);
+  flex-wrap:wrap;gap:8px;
+}
+.post-tags{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.ptag {
+  font-family:'Space Mono',monospace;
+  font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;
+  padding:3px 8px;
+  border:1px solid var(--line);
+  color:var(--ink-dim);
+}
+.ptag-rust{border-color:var(--rust-line);color:var(--rust);}
+.ptag-ink{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.post-body {
+  padding:24px 18px;
+  font-family:'Playfair Display',serif;
+  font-size:15px;font-weight:400;
+  line-height:2;
+  white-space:pre-wrap;
+  color:var(--ink);
+}
+.post-footer {
+  padding:10px 18px;
+  border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;
+  align-items:center;
+}
+.post-num{
+  font-family:'Space Mono',monospace;
+  font-size:9px;color:var(--ink-dim);letter-spacing:1px;
+}
+.copy-btn {
+  background:none;border:none;
+  font-family:'Space Mono',monospace;
+  font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--ink-dim);cursor:pointer;
+  transition:color 0.2s;padding:4px 0;
+}
+.copy-btn:hover,.copy-btn.on{color:var(--rust);}
+
+/* SCRIPT SECTIONS (Troc Kit) */
+.script-block{margin-bottom:20px;}
+.script-label {
+  font-family:'Space Mono',monospace;
+  font-size:8px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--rust);
+  margin-bottom:8px;
+}
+.script-body {
+  background:var(--white);
+  border:1px solid var(--line);
+  border-left:3px solid var(--ink);
+  padding:16px 18px;
+  font-family:'Space Mono',monospace;
+  font-size:12px;line-height:1.8;
+  white-space:pre-wrap;
+  position:relative;
+}
+.script-copy {
+  position:absolute;top:10px;right:10px;
+  background:none;border:none;
+  font-family:'Space Mono',monospace;
+  font-size:8px;letter-spacing:1px;
+  color:var(--ink-dim);cursor:pointer;
+  text-transform:uppercase;
+  transition:color 0.2s;
+}
+.script-copy:hover{color:var(--rust);}
+
+/* DIAGNOSTIC */
+.diag-block{margin-bottom:28px;}
+.diag-title {
+  font-family:'Archivo Black',sans-serif;
+  font-size:14px;letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:10px;
+  display:flex;align-items:center;gap:10px;
+}
+.diag-title::after{content:'';flex:1;height:1px;background:var(--line);}
+.diag-body {
+  font-family:'Space Mono',monospace;
+  font-size:12px;line-height:1.8;
+  color:var(--ink-mid);
+}
+.angle-bloc {
+  background:var(--ink);
+  padding:16px 18px;
+  border-top:2px solid var(--rust);
+  margin-top:8px;
+}
+.angle-label {
+  font-family:'Space Mono',monospace;
+  font-size:8px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--rust);
+  margin-bottom:8px;
+}
+.angle-body {
+  font-family:'Space Mono',monospace;
+  font-size:12px;line-height:1.8;
+  color:rgba(242,237,228,0.8);
+}
+
+/* ASIDE WIDGETS */
+.widget{margin-bottom:32px;}
+.widget-title {
+  font-family:'Archivo Black',sans-serif;
+  font-size:10px;letter-spacing:3px;
+  text-transform:uppercase;
+  padding-bottom:8px;
+  border-bottom:2px solid var(--ink);
+  margin-bottom:14px;
+}
+.widget-item {
+  font-family:'Space Mono',monospace;
+  font-size:10px;line-height:1.7;
+  color:var(--ink-mid);
+  padding:8px 0;
+  border-bottom:1px solid var(--line);
+}
+.widget-item strong{color:var(--ink);font-weight:700;}
+
+/* CAL GRID */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:12px;}
+.cal-cell {
+  aspect-ratio:1;
+  background:var(--white);
+  border:1px solid var(--line);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;
+  font-size:8px;color:var(--ink-dim);
+}
+.cal-cell.has{
+  background:var(--ink);
+  border-color:var(--ink);
+  color:var(--paper);
+  border-top:2px solid var(--rust);
+}
+.cal-pn{font-size:6px;color:var(--rust);margin-top:1px;}
+
+/* ERROR */
+.error-box {
+  background:var(--white);
+  border:1px solid var(--line);
+  border-top:2px solid var(--rust);
+  padding:16px 18px;
+  font-family:'Space Mono',monospace;
+  font-size:11px;color:var(--rust);
+  line-height:1.6;margin-top:12px;
+}
+
+/* DIVIDER */
+.section-break{
+  display:flex;align-items:center;gap:16px;
+  margin:28px 0;
+}
+.section-break::before,.section-break::after{content:'';flex:1;height:1px;background:var(--line);}
+.section-break span{
+  font-family:'Space Mono',monospace;
+  font-size:8px;letter-spacing:3px;
+  color:var(--ink-dim);text-transform:uppercase;
+}
+
+.hidden{display:none!important;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,80%,100%{opacity:0.2;transform:scale(0.8)}40%{opacity:1;transform:scale(1)}}
+
+@media(max-width:700px){
+  .col-layout{grid-template-columns:1fr;}
+  .col-aside{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:32px;}
+  .masthead{padding:16px 20px 12px;}
+  main{padding:28px 16px 80px;}
+  .section-nav{padding:0 16px;}
+  .sel-grid.cols3{grid-template-columns:repeat(2,1fr);}
+}
+</style>
 </head>
 <body>
 
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-title">MOMENT<br><em style="font-family:'Playfair Display',serif;font-style:italic;color:#C4440A;">Troc</em><br>STUDIO</div>
+  <div class="loader-sub">Agent IA · V3</div>
+  <div class="loader-bar"></div>
+</div>
+
 <!-- KEY GATE -->
-<div id="key-gate" style="position:fixed;inset:0;background:#080808;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;padding:24px;">
-  <div style="max-width:400px;width:100%;border:1px solid rgba(201,168,76,0.3);padding:40px 32px;position:relative;background:rgba(255,255,255,0.01);">
-    <div style="position:absolute;top:10px;left:10px;width:14px;height:14px;border-top:1px solid rgba(201,168,76,0.5);border-left:1px solid rgba(201,168,76,0.5);"></div>
-    <div style="position:absolute;top:10px;right:10px;width:14px;height:14px;border-top:1px solid rgba(201,168,76,0.5);border-right:1px solid rgba(201,168,76,0.5);"></div>
-    <div style="position:absolute;bottom:10px;left:10px;width:14px;height:14px;border-bottom:1px solid rgba(201,168,76,0.5);border-left:1px solid rgba(201,168,76,0.5);"></div>
-    <div style="position:absolute;bottom:10px;right:10px;width:14px;height:14px;border-bottom:1px solid rgba(201,168,76,0.5);border-right:1px solid rgba(201,168,76,0.5);"></div>
-    <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:rgba(201,168,76,0.6);text-transform:uppercase;margin-bottom:8px;">Moment Troc</div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:3px;background:linear-gradient(135deg,#C9A84C,#f0d080,#C9A84C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:32px;line-height:1;">Studio</div>
-    <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:rgba(240,235,224,0.4);text-transform:uppercase;margin-bottom:10px;">Clé d'accès</div>
-    <input type="text" id="key-input" placeholder="XXXX-XXXXXX" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.2);border-radius:2px;color:#F0EBE0;font-family:'DM Mono',monospace;font-size:16px;letter-spacing:4px;padding:14px 16px;outline:none;text-transform:uppercase;margin-bottom:12px;transition:border-color 0.3s;" onkeydown="if(event.key==='Enter') verifierCle()" oninput="this.value=this.value.toUpperCase()">
-    <div id="key-error" style="font-family:'DM Mono',monospace;font-size:11px;color:#c0392b;letter-spacing:1px;margin-bottom:12px;min-height:16px;display:none;"></div>
-    <button onclick="verifierCle()" style="width:100%;padding:16px;background:transparent;border:1px solid #C9A84C;color:#C9A84C;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;cursor:pointer;transition:all 0.3s;border-radius:2px;position:relative;overflow:hidden;" onmouseover="this.style.background='#C9A84C';this.style.color='#080808'" onmouseout="this.style.background='transparent';this.style.color='#C9A84C'">Activer</button>
-    <div style="margin-top:20px;font-family:'Fraunces',serif;font-size:12px;font-style:italic;color:rgba(240,235,224,0.2);text-align:center;line-height:1.5;">Accès réservé aux membres.<br>Clé unique par appareil.</div>
+<div id="keygate" style="display:none;">
+  <div class="gate-inner">
+    <div class="gate-label">Moment Troc · Accès</div>
+    <div class="gate-title">Studio<br>V3</div>
+    <input type="text" class="gate-input" id="key-input" placeholder="Clé d'accès" autocomplete="off" onkeydown="if(event.key==='Enter')verifierCle()" oninput="this.value=this.value.toUpperCase()">
+    <div id="gate-err"></div>
+    <button class="gate-btn" onclick="verifierCle()">Activer →</button>
+    <div style="margin-top:20px;font-family:'Space Mono',monospace;font-size:9px;color:rgba(242,237,228,0.2);letter-spacing:1px;">Accès réservé aux membres Moment Troc</div>
   </div>
 </div>
 
-<header>
-  <div class="logo">Moment Troc<span>Studio</span></div>
-  <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--gold-dim);letter-spacing:2px;">Agent de Contenu</div>
-</header>
+<!-- MASTHEAD -->
+<div class="hr-thick"></div>
+<div class="masthead">
+  <div class="masthead-title">Moment <em>Troc</em> Studio</div>
+  <div class="masthead-meta">
+    Agent IA · Gemini<br>
+    Framework Moment Troc<br>
+    Vendre c'est reconnaître
+  </div>
+</div>
+<div class="hr-thin"></div>
+
+<!-- MODE NAV -->
+<nav class="section-nav">
+  <button class="section-tab on" onclick="switchMode('studio')">Studio</button>
+  <button class="section-tab" onclick="switchMode('trockit')">Troc Kit</button>
+  <button class="section-tab" onclick="switchMode('sprint')">Content Sprint</button>
+  <button class="section-tab" onclick="switchMode('diagnostic')">Diagnostic</button>
+</nav>
+<div class="hr-thin"></div>
 
 <main>
-  <div class="hero">
-    <h1>Studio</h1>
-    <p>Décris ton univers. L'agent calcule. La série commence.</p>
-  </div>
 
-  <div class="steps">
-    <div class="step-dot active" id="dot1"><div class="num">01</div><div class="label">Univers</div></div>
-    <div class="step-line" id="line1"></div>
-    <div class="step-dot" id="dot2"><div class="num">02</div><div class="label">Profils</div></div>
-    <div class="step-line" id="line2"></div>
-    <div class="step-dot" id="dot3"><div class="num">03</div><div class="label">Arsenal</div></div>
-  </div>
+<!-- ══════════════ MODE STUDIO ══════════════ -->
+<div id="mode-studio">
+  <div class="col-layout">
+    <div class="col-main">
 
-  <!-- STEP 1 -->
-  <div id="step1">
-    <div class="card">
-      <div class="card-title">01 — Ton Univers</div>
-      <div class="field"><label>Ton business ou produit <span class="optional">requis</span></label><textarea id="input-business" rows="4" placeholder="Décris ce que tu fais, pour qui, et ce que ça change dans la vie de tes clients..."></textarea></div>
-      <div class="field"><label>Idée de contenu brut <span class="optional">optionnel</span></label><textarea id="input-contenu" rows="3" placeholder="Une idée, une ébauche, une phrase — l'agent va la transformer..."></textarea></div>
-      <div class="field"><label>Tes mots à toi <span class="optional">optionnel</span></label><input type="text" id="input-mots" placeholder="Ex: signal, terrain, racine, forge — les mots de ton univers..."></div>
-      <div class="field"><label>La douleur centrale <span class="optional">optionnel</span></label><textarea id="input-douleur" rows="2" placeholder="La vraie tension que porte ta cible — pas la surface, le fond..."></textarea></div>
-    </div>
-    <button class="btn-primary" onclick="analyserProfils()"><span>Analyser les Profils →</span></button>
-  </div>
+      <div id="st-step1">
+        <div class="section-eyebrow">Mode Studio</div>
+        <div class="section-headline">L'agent<br><em>lit ta cible.</em></div>
+        <div class="section-deck">Décris ton univers. L'agent détecte les profils, choisit l'intention, et génère du contenu qui coupe.</div>
 
-  <!-- STEP 2 -->
-  <div id="step2" class="hidden">
-    <div class="card">
-      <div class="card-title">02 — Profils Dominants</div>
-      <div id="loading-profils" class="loading"><div class="loading-dots"><span></span><span></span><span></span></div> Calcul en cours...</div>
-      <div id="profils-result" class="hidden">
-        <div class="profils-detected" id="profils-tags"></div>
-        <div class="profil-reasoning" id="profil-reasoning-text"></div>
+        <div class="field">
+          <div class="field-label">Ton business ou produit <span class="opt">requis</span></div>
+          <textarea id="s-biz" rows="4" placeholder="Ce que tu fais, pour qui, ce que ça change dans leur vie..."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Idée brute <span class="opt">optionnel</span></div>
+          <textarea id="s-idee" rows="2" placeholder="Une idée — l'agent va la transformer..."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">La douleur centrale <span class="opt">optionnel</span></div>
+          <textarea id="s-douleur" rows="2" placeholder="La tension profonde que porte ta cible..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="studioAnalyser()">Analyser les profils →</button>
+      </div>
+
+      <div id="st-step2" class="hidden">
+        <div class="section-eyebrow">Étape 02</div>
+        <div class="section-headline"><em>Profils</em><br>détectés.</div>
+
+        <div id="st-load1" class="loading">
+          <div class="loading-head">Lecture du marché...</div>
+          <div class="loading-steps">
+            <div class="loading-step"><div class="dot"></div><span>Analyse des archétypes</span></div>
+            <div class="loading-step"><div class="dot"></div><span>Détection des fissures</span></div>
+            <div class="loading-step"><div class="dot"></div><span>Calibration Moment Troc</span></div>
+          </div>
+          <div class="loading-status" id="st-sub1"></div>
+        </div>
+
+        <div id="st-profils" class="hidden">
+          <div id="st-tags" class="profil-tags"></div>
+          <div class="reasoning" id="st-reasoning"></div>
+        </div>
+        <div id="st-err1" class="hidden error-box"></div>
+
+        <div class="hidden" id="st-etape-card" style="margin-top:28px;">
+          <div class="hr-rust" style="margin-bottom:20px;"></div>
+          <div class="field-label" style="margin-bottom:12px;">Choisis une étape Moment Troc</div>
+          <div class="sel-grid" id="st-etapes"></div>
+        </div>
+
+        <div class="btn-row hidden" id="st-actions2">
+          <button class="btn-ghost" onclick="studioBack(1)">← Retour</button>
+          <button class="btn-primary" id="st-btn-gen" onclick="studioGenerer()" disabled style="flex:1">Générer la série →</button>
+        </div>
+      </div>
+
+      <div id="st-step3" class="hidden">
+        <div class="section-eyebrow">Arsenal</div>
+        <div class="section-headline"><em>Contenu</em><br>calibré.</div>
+
+        <div id="st-load3" class="loading">
+          <div class="loading-head">Génération en cours...</div>
+          <div class="loading-steps">
+            <div class="loading-step"><div class="dot"></div><span>Construction des hooks</span></div>
+            <div class="loading-step"><div class="dot"></div><span>Injection style Wil Aime</span></div>
+            <div class="loading-step"><div class="dot"></div><span>Auto-évaluation</span></div>
+          </div>
+          <div class="loading-status" id="st-sub3"></div>
+        </div>
+
+        <div id="st-result" class="hidden">
+          <div id="st-eval" class="eval-bar hidden">✓ Auto-évaluation — angles morts corrigés</div>
+          <div id="st-posts"></div>
+          <div class="section-break"><span>Calendrier</span></div>
+          <div id="st-cal" class="cal"></div>
+        </div>
+        <div id="st-err3" class="hidden error-box"></div>
+
+        <div class="btn-row hidden" id="st-actions3">
+          <button class="btn-ghost" onclick="studioBack(2)">← Retour</button>
+          <button class="btn-primary" onclick="studioNouvelle()" style="flex:1">Changer d'étape →</button>
+        </div>
       </div>
     </div>
-    <div class="card hidden" id="etape-card">
-      <div class="card-title">Choisis une Étape</div>
-      <div class="etapes-grid" id="etapes-grid"></div>
-    </div>
-    <div style="display:flex;gap:12px;margin-top:8px;" id="step2-actions" class="hidden">
-      <button class="btn-secondary" onclick="goBack(1)">← Modifier</button>
-      <button class="btn-primary" onclick="genererSerie()"><span>Générer la Série →</span></button>
-    </div>
-  </div>
 
-  <!-- STEP 3 -->
-  <div id="step3" class="hidden">
-    <div class="card">
-      <div class="card-title">03 — Arsenal de contenu</div>
-      <div id="loading-posts" class="loading"><div class="loading-dots"><span></span><span></span><span></span></div> Génération de la série...</div>
-      <div id="posts-result" class="hidden">
-        <div id="posts-list" class="posts-container"></div>
-        <div class="divider"><span>Calendrier</span></div>
-        <div id="calendar-view" class="calendar-grid"></div>
+    <div class="col-aside">
+      <div class="widget">
+        <div class="widget-title">Les 3 Intentions</div>
+        <div class="widget-item"><strong>Valeur Brute</strong><br>Une vérité sèche. Aucune histoire. Actionnable.</div>
+        <div class="widget-item"><strong>Émotion / Miroir</strong><br>La scène. Le "il" qui bascule vers "tu". Mécanique Wil Aime.</div>
+        <div class="widget-item"><strong>Curiosité / Suspense</strong><br>Incomplet. Le lecteur veut la suite.</div>
+      </div>
+      <div class="widget">
+        <div class="widget-title">Les 4 Niveaux</div>
+        <div class="widget-item"><strong>Masque</strong> — Ce que le prospect montre</div>
+        <div class="widget-item"><strong>Déclencheur</strong> — Ce qui active la décision</div>
+        <div class="widget-item"><strong>Fissure</strong> — Ce qu'il n'ose pas dire</div>
+        <div class="widget-item"><strong>Reconstruction</strong> — Ce qu'il se raconte après</div>
+      </div>
+      <div class="widget">
+        <div class="widget-title">Philosophie</div>
+        <div class="widget-item" style="font-family:'Playfair Display',serif;font-style:italic;font-size:13px;line-height:1.6;color:var(--ink);">"Vendre c'est pas convaincre.<br>C'est reconnaître."</div>
       </div>
     </div>
-    <div style="display:flex;gap:12px;margin-top:8px;">
-      <button class="btn-secondary" onclick="goBack(2)">← Retour</button>
-      <button class="btn-primary" onclick="window.location.reload()"><span>Nouvelle série</span></button>
+  </div>
+</div>
+
+<!-- ══════════════ MODE TROC KIT ══════════════ -->
+<div id="mode-trockit" class="hidden">
+  <div class="col-layout">
+    <div class="col-main">
+      <div id="tk-step1">
+        <div class="section-eyebrow">Mode Troc Kit</div>
+        <div class="section-headline">Le script<br><em>qui vend.</em></div>
+        <div class="section-deck">Décris ton prospect. L'agent détecte son archétype et génère le script complet — du premier message au closing.</div>
+
+        <div class="field">
+          <div class="field-label">Décris ton prospect <span class="opt">requis</span></div>
+          <textarea id="tk-prospect" rows="4" placeholder="Qui est-il ? Que fait-il ? Quelle est sa situation maintenant ?..."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Ton produit ou service <span class="opt">requis</span></div>
+          <textarea id="tk-produit" rows="3" placeholder="Ce que tu proposes à ce prospect..."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Canal de contact <span class="opt">requis</span></div>
+          <div class="sel-grid cols3">
+            <button class="sel-item" onclick="selCanal(this,'whatsapp')"><div class="sel-item-name">WhatsApp</div></button>
+            <button class="sel-item" onclick="selCanal(this,'dm')"><div class="sel-item-name">DM Facebook</div></button>
+            <button class="sel-item" onclick="selCanal(this,'commentaire')"><div class="sel-item-name">Commentaire</div></button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Objection probable <span class="opt">optionnel</span></div>
+          <input type="text" id="tk-objection" placeholder="Ex: trop cher, pas le bon moment...">
+        </div>
+        <button class="btn-primary" onclick="trocKitGen()">Générer le script →</button>
+      </div>
+
+      <div id="tk-step2" class="hidden">
+        <div class="section-eyebrow">Script généré</div>
+        <div class="section-headline"><em>Arsenal</em><br>de vente.</div>
+
+        <div id="tk-load" class="loading">
+          <div class="loading-head">Analyse du profil...</div>
+          <div class="loading-steps">
+            <div class="loading-step"><div class="dot"></div><span>Détection archétype</span></div>
+            <div class="loading-step"><div class="dot"></div><span>Calibration psychologique</span></div>
+            <div class="loading-step"><div class="dot"></div><span>Auto-évaluation angles morts</span></div>
+          </div>
+          <div class="loading-status" id="tk-sub"></div>
+        </div>
+
+        <div id="tk-result" class="hidden">
+          <div id="tk-eval" class="eval-bar hidden">✓ Script auto-évalué — angles morts corrigés</div>
+          <div id="tk-arch" class="profil-tags" style="margin-bottom:20px;"></div>
+          <div id="tk-scripts"></div>
+        </div>
+        <div id="tk-err" class="hidden error-box"></div>
+
+        <div class="btn-row hidden" id="tk-actions">
+          <button class="btn-ghost" onclick="trocKitBack()">← Modifier</button>
+          <button class="btn-primary" onclick="trocKitGen()" style="flex:1">Regénérer →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-aside">
+      <div class="widget">
+        <div class="widget-title">Script complet</div>
+        <div class="widget-item"><strong>Premier message</strong><br>Calibré pour le canal et l'archétype</div>
+        <div class="widget-item"><strong>Relance</strong><br>Si pas de réponse après 24h</div>
+        <div class="widget-item"><strong>Gestion objection</strong><br>Réponse psychologique — pas argumentative</div>
+        <div class="widget-item"><strong>Closing</strong><br>La phrase exacte pour conclure</div>
+        <div class="widget-item"><strong>Erreurs à éviter</strong><br>Ce qui tue la vente avec ce profil</div>
+      </div>
     </div>
   </div>
+</div>
+
+<!-- ══════════════ MODE CONTENT SPRINT ══════════════ -->
+<div id="mode-sprint" class="hidden">
+  <div class="col-layout">
+    <div class="col-main">
+      <div id="sp-step1">
+        <div class="section-eyebrow">Mode Content Sprint</div>
+        <div class="section-headline">30 jours.<br><em>Prêt à publier.</em></div>
+        <div class="section-deck">Un mois de contenu généré, auto-évalué, et organisé. Progression semaine par semaine vers la vente.</div>
+
+        <div class="field">
+          <div class="field-label">Ton business <span class="opt">requis</span></div>
+          <textarea id="sp-biz" rows="3" placeholder="Ton activité et ta cible..."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Objectif du mois <span class="opt">requis</span></div>
+          <div class="sel-grid">
+            <button class="sel-item" onclick="selSprint(this,'notoriete')"><div class="sel-item-name">Notoriété</div><div class="sel-item-desc">Se faire connaître</div></button>
+            <button class="sel-item" onclick="selSprint(this,'vente')"><div class="sel-item-name">Vente</div><div class="sel-item-desc">Convertir des prospects</div></button>
+            <button class="sel-item" onclick="selSprint(this,'confiance')"><div class="sel-item-name">Confiance</div><div class="sel-item-desc">Bâtir l'autorité</div></button>
+            <button class="sel-item" onclick="selSprint(this,'lancement')"><div class="sel-item-name">Lancement</div><div class="sel-item-desc">Lancer une offre</div></button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Archétype cible <span class="opt">optionnel</span></div>
+          <input type="text" id="sp-arch" placeholder="Ex: Élévateur, Automatiseur...">
+        </div>
+        <button class="btn-primary" onclick="sprintGen()">Lancer le Sprint →</button>
+      </div>
+
+      <div id="sp-step2" class="hidden">
+        <div class="section-eyebrow">Plan éditorial</div>
+        <div class="section-headline"><em>30 jours</em><br>de contenu.</div>
+
+        <div id="sp-load" class="loading">
+          <div class="loading-head">Construction du plan...</div>
+          <div class="loading-steps">
+            <div class="loading-step"><div class="dot"></div><span>Planification semaine par semaine</span></div>
+            <div class="loading-step"><div class="dot"></div><span>Génération des 15 posts</span></div>
+            <div class="loading-step"><div class="dot"></div><span>Vérification progression</span></div>
+          </div>
+          <div class="loading-status" id="sp-sub"></div>
+        </div>
+
+        <div id="sp-result" class="hidden">
+          <div id="sp-eval" class="eval-bar hidden">✓ Sprint auto-évalué — équilibre et progression vérifiés</div>
+          <div id="sp-posts"></div>
+          <div class="section-break"><span>Calendrier 30 jours</span></div>
+          <div id="sp-cal" class="cal"></div>
+        </div>
+        <div id="sp-err" class="hidden error-box"></div>
+
+        <div class="btn-row hidden" id="sp-actions">
+          <button class="btn-ghost" onclick="sprintBack()">← Modifier</button>
+          <button class="btn-primary" onclick="sprintGen()" style="flex:1">Regénérer →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-aside">
+      <div class="widget">
+        <div class="widget-title">La progression</div>
+        <div class="widget-item"><strong>Semaine 1</strong><br>Notoriété + accroche</div>
+        <div class="widget-item"><strong>Semaine 2</strong><br>Valeur + preuve</div>
+        <div class="widget-item"><strong>Semaine 3</strong><br>Tension + désir</div>
+        <div class="widget-item"><strong>Semaine 4</strong><br>Closing + réassurance</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MODE DIAGNOSTIC ══════════════ -->
+<div id="mode-diagnostic" class="hidden">
+  <div class="col-layout">
+    <div class="col-main">
+      <div id="d-step1">
+        <div class="section-eyebrow">Mode Diagnostic</div>
+        <div class="section-headline">Révèle tes<br><em>angles morts.</em></div>
+        <div class="section-deck">L'agent analyse ton marché, identifie ce que tu ne vois pas, et forge ton avantage comparatif réel.</div>
+
+        <div class="field">
+          <div class="field-label">Ton activité <span class="opt">requis</span></div>
+          <textarea id="d-activite" rows="3" placeholder="Ce que tu fais, pour qui, depuis combien de temps..."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Tes résultats actuels <span class="opt">requis</span></div>
+          <textarea id="d-resultats" rows="2" placeholder="Ventes actuelles, audience, ce qui marche ou pas..."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Tes concurrents <span class="opt">requis</span></div>
+          <textarea id="d-concurrents" rows="3" placeholder="Qui vend la même chose ? Comment ils se positionnent ?..."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Ta force perçue <span class="opt">optionnel</span></div>
+          <textarea id="d-force" rows="2" placeholder="Ce qui te différencie selon toi..."></textarea>
+        </div>
+        <div class="field">
+          <div class="field-label">Ta plus grande frustration <span class="opt">optionnel</span></div>
+          <textarea id="d-frustration" rows="2" placeholder="Ce qui bloque ta croissance..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="diagGen()">Lancer le diagnostic →</button>
+      </div>
+
+      <div id="d-step2" class="hidden">
+        <div class="section-eyebrow">Rapport</div>
+        <div class="section-headline"><em>Diagnostic</em><br>complet.</div>
+
+        <div id="d-load" class="loading">
+          <div class="loading-head">Analyse en profondeur...</div>
+          <div class="loading-steps">
+            <div class="loading-step"><div class="dot"></div><span>Analyse du positionnement</span></div>
+            <div class="loading-step"><div class="dot"></div><span>Identification angles morts</span></div>
+            <div class="loading-step"><div class="dot"></div><span>Forge de l'avantage comparatif</span></div>
+          </div>
+          <div class="loading-status" id="d-sub"></div>
+        </div>
+
+        <div id="d-result" class="hidden">
+          <div id="d-eval" class="eval-bar hidden">✓ Diagnostic auto-évalué — angles morts confirmés</div>
+          <div id="d-sections"></div>
+        </div>
+        <div id="d-err" class="hidden error-box"></div>
+
+        <div class="btn-row hidden" id="d-actions">
+          <button class="btn-ghost" onclick="diagBack()">← Modifier</button>
+          <button class="btn-primary" onclick="diagGen()" style="flex:1">Relancer →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-aside">
+      <div class="widget">
+        <div class="widget-title">Le rapport inclut</div>
+        <div class="widget-item"><strong>Archétype principal</strong><br>Le vrai profil de ta cible</div>
+        <div class="widget-item"><strong>Positionnement réel</strong><br>Comment tu te positionnes vraiment vs ce que tu crois</div>
+        <div class="widget-item"><strong>Angles morts</strong><br>Ce que tu ne vois pas, ce que les concurrents exploitent</div>
+        <div class="widget-item"><strong>Avantage comparatif</strong><br>Ton vrai différenciateur unique</div>
+        <div class="widget-item"><strong>Stratégie immédiate</strong><br>3 actions à faire cette semaine</div>
+        <div class="widget-item"><strong>Message clé</strong><br>La phrase qui résume ton positionnement</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </main>
 
 <script>
-  (function(){
-    "use strict";
+(function(){
+'use strict';
 
-    // ---------- 10 CLÉS VALIDES ----------
-    const VALID_KEYS = new Set([
-      "KBM2000-2022A",
-      "KvSC2025",
-      "CGhohu2380",
-      "MT-STUDIO-01",
-      "X9P7L-4MN2Q",
-      "OR-FR-2024",
-      "BETA-TEST-99",
-      "VIP-ACCESS-42",
-      "TROCMEDIA-77",
-      "EDEN-2025-AB"
-    ]);
+// ═══════════════════════════════
+// CONFIG
+// ═══════════════════════════════
+var GEMINI_KEY = 'AIzaSyD4I3adUWDO1JdL4drz4wOykb43XVZASNc';
+var GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=';
+var MASTER = 'MKB2000-2022A';
+var KEYS = ['MT-2024A','MT-2024B','MT-2024C','MT-2024D','MT-2024E','MT-2024F','MT-2024G','MT-2024H','MT-2024I','MT-2024J','MT-2024K','MT-2024L','MT-2024M','MT-2024N','MT-2024O','MT-2024P','MT-2024Q','MT-2024R','MT-2024S','MT-2024T'];
 
-    const STORAGE_KEY = "moment_troc_license";
+// ═══════════════════════════════
+// FRAMEWORK
+// ═══════════════════════════════
+var ARCHETYPES = {
+  'Automatiseur':{trigger:'gain de temps, efficacité, systèmes',peur:'perdre du temps sur des tâches inutiles',hook:'Ce que tu fais en 3h, ça peut se faire en 20 minutes.',fissure:'Il perd du temps et il le sait',version_peur:'Il a peur que son système s\'effondre'},
+  'Optimiseur Valeur':{trigger:'qualité, résultat concret, ROI',peur:'payer pour quelque chose qui ne tient pas',hook:'Tu ne paies pas le prix. Tu paies le résultat.',fissure:'Il doute que ça vaille ce que ça coûte',version_peur:'Il a peur d\'avoir fait le mauvais choix'},
+  'Optimiseur Prix':{trigger:'économie, meilleur deal, offre',peur:'être arnaqué ou payer trop cher',hook:'Même résultat. La moitié du prix.',fissure:'Il a peur de se faire avoir',version_peur:'La peur de perdre de l\'argent domine tout'},
+  'Élévateur':{trigger:'statut, transformation, reconnaissance',peur:'rester là où il est',hook:'Dans 90 jours, les gens autour de toi vont remarquer quelque chose.',fissure:'Il veut être vu différemment',version_peur:'Il a peur de redescendre après avoir grimpé'},
+  'Libérateur':{trigger:'liberté, sortir d\'une contrainte',peur:'rester prisonnier d\'une situation',hook:'Et si la vraie solution c\'était de tout arrêter et recommencer autrement ?',fissure:'Il étouffe et cherche une sortie',version_peur:'Il a peur de ne jamais sortir'},
+  'Protecteur':{trigger:'sécurité, protection — version peur de tous les autres archétypes',peur:'perdre ce qu\'il a construit',hook:'Ce n\'est pas ce que tu gagnes qui compte. C\'est ce que tu ne perds pas.',fissure:'La peur de perdre est plus forte que l\'envie de gagner',version_peur:'Il protège tout le monde sauf lui-même'}
+};
 
-    // Génération d'un identifiant d'appareil (hash simple mais robuste)
-    function generateDeviceId() {
-      const nav = window.navigator;
-      const screen = window.screen;
-      const data = [
-        nav.userAgent,
-        nav.language,
-        nav.platform,
-        screen.colorDepth,
-        screen.width,
-        screen.height,
-        new Date().getTimezoneOffset()
-      ].join('|');
-      let hash = 0;
-      for (let i = 0; i < data.length; i++) {
-        const char = data.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash;
-      }
-      return 'DEV_' + Math.abs(hash).toString(16).toUpperCase();
+var ETAPES = [
+  {id:'masque',name:'MASQUE',desc:'Ce que le prospect montre — la surface de sa demande'},
+  {id:'declencheur',name:'DÉCLENCHEUR',desc:'Ce qui active réellement la décision d\'achat'},
+  {id:'fissure',name:'FISSURE',desc:'La tension cachée — ce qu\'il n\'ose pas dire'},
+  {id:'reconstruction',name:'RECONSTRUCTION',desc:'Comment il se raconte l\'histoire après l\'achat'}
+];
+
+var WIL_AIME = 'Mécanique narrative Wil Aime — Le Gendre Idéal: commence par "il" — le lecteur se croit spectateur d\'une scène qui parle de quelqu\'un d\'autre. À mi-chemin la scène bascule vers "tu" sans transition forcée — il réalise que c\'est lui. Le vrai personnage qu\'on attendait n\'arrive jamais — quelqu\'un d\'autre occupe sa place. La révélation finale retourne tout sans résolution confortable. Dense émotionnellement.';
+
+var DIVIN = 'Style Divin Setondji: phrases ultra-courtes. Une idée par ligne. Pas de connecteurs évidents. Pivots inattendus. Le lecteur ne voit pas où tu vas jusqu\'à la dernière ligne.';
+
+var MIROIR = 'Positionnement Miroir Brutal: ne jamais caresser dans le sens du poil. Tout le monde applaudit — toi tu révèles la vérité même quand ça fait mal. Précision chirurgicale. Pas d\'encouragements vides.';
+
+var INTENTIONS = {
+  valeur: 'VALEUR BRUTE: Pas d\'histoire. Pas de "il". Pas d\'émotion. Une vérité précise, sèche, directe. Maximum 8 lignes. Ton autoritaire. Pas de question finale — une affirmation qui tranche.',
+  emotion: 'ÉMOTION/MIROIR (Wil Aime): Commence par "il" dans une scène concrète du quotidien local urbain africain. À mi-chemin bascule vers "tu" — le lecteur réalise que c\'est lui. Dense émotionnellement. Fin avec une question qui dérange.',
+  curiosite: 'CURIOSITÉ/SUSPENSE: Court — maximum 8 lignes. Une situation paradoxale ou un résultat inattendu. On ne donne pas tout. La fin annonce quelque chose sans l\'expliquer. Le lecteur doit commenter pour savoir la suite.'
+};
+
+// STATE
+var S = {
+  studio:{profils:[],etape:null,biz:'',idee:'',douleur:''},
+  trockit:{canal:null},
+  sprint:{objectif:null},
+  _stPosts:[],_tkTexts:{},_spPosts:[]
+};
+
+// ═══════════════════════════════
+// API
+// ═══════════════════════════════
+async function callGemini(prompt, tokens){
+  var r = await fetch(GEMINI_URL+GEMINI_KEY,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      contents:[{parts:[{text:prompt}]}],
+      generationConfig:{temperature:0.88,maxOutputTokens:tokens||2048}
+    })
+  });
+  if(!r.ok){var e=await r.json().catch(function(){return{};});throw new Error(e.error&&e.error.message?e.error.message:'Erreur API ('+r.status+')');}
+  var d=await r.json();
+  if(!d.candidates||!d.candidates[0]||!d.candidates[0].content)throw new Error('Réponse vide');
+  return d.candidates[0].content.parts[0].text;
+}
+
+async function callWithEval(main,evalP,tokens){
+  var r1=await callGemini(main,tokens||2500);
+  var evalFull=evalP+'\n\nCONTENU:\n'+r1+'\n\nSi satisfaisant: VALIDE\nSinon: AMÉLIORER\n[version corrigée]';
+  var r2=await callGemini(evalFull,tokens||2500);
+  if(r2.trim().startsWith('AMÉLIORER')){return{content:r2.replace(/^AMÉLIORER\s*/i,'').trim(),improved:true};}
+  return{content:r1,improved:false};
+}
+
+// ═══════════════════════════════
+// KEY GATE
+// ═══════════════════════════════
+window.verifierCle=function(){
+  var v=document.getElementById('key-input').value.trim().toUpperCase();
+  var e=document.getElementById('gate-err');
+  if(v===MASTER||KEYS.indexOf(v)!==-1){
+    localStorage.setItem('mt_k',v);
+    document.getElementById('keygate').style.display='none';
+    e.textContent='';
+  } else {e.textContent='Clé invalide.';}
+};
+
+// ═══════════════════════════════
+// UTILS
+// ═══════════════════════════════
+function show(id){document.getElementById(id).classList.remove('hidden');}
+function hide(id){document.getElementById(id).classList.add('hidden');}
+function txt(id,t){document.getElementById(id).textContent=t;}
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function err(id,msg){var e=document.getElementById(id);e.className='error-box';e.textContent='⚠ '+msg;e.classList.remove('hidden');}
+function statTimer(id,msgs,ms){var i=0;return setInterval(function(){if(i<msgs.length)txt(id,msgs[i++]);},ms||1400);}
+function cp(text,btn){navigator.clipboard.writeText(text).then(function(){btn.textContent='✓ Copié';btn.classList.add('on');setTimeout(function(){btn.textContent='Copier';btn.classList.remove('on');},2000);});}
+
+// ═══════════════════════════════
+// MODE SWITCH
+// ═══════════════════════════════
+window.switchMode=function(m){
+  ['studio','trockit','sprint','diagnostic'].forEach(function(x){
+    document.getElementById('mode-'+x).classList.toggle('hidden',x!==m);
+  });
+  document.querySelectorAll('.section-tab').forEach(function(t,i){
+    t.classList.toggle('on',['studio','trockit','sprint','diagnostic'][i]===m);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+// ═══════════════════════════════
+// ═══ STUDIO ════════════════════
+// ═══════════════════════════════
+function stRenderEtapes(){
+  var g=document.getElementById('st-etapes');g.innerHTML='';
+  ETAPES.forEach(function(e){
+    var b=document.createElement('button');
+    b.className='sel-item';
+    b.innerHTML='<div class="sel-item-name">'+e.name+'</div><div class="sel-item-desc">'+e.desc+'</div>';
+    b.onclick=function(){
+      document.querySelectorAll('#st-etapes .sel-item').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on');S.studio.etape=e.id;
+      document.getElementById('st-btn-gen').disabled=false;
+    };
+    g.appendChild(b);
+  });
+}
+
+window.studioAnalyser=async function(){
+  S.studio.biz=document.getElementById('s-biz').value.trim();
+  S.studio.idee=document.getElementById('s-idee').value.trim();
+  S.studio.douleur=document.getElementById('s-douleur').value.trim();
+  if(!S.studio.biz){document.getElementById('s-biz').focus();return;}
+
+  hide('st-step1');show('st-step2');
+  show('st-load1');hide('st-profils');hide('st-err1');hide('st-etape-card');hide('st-actions2');
+
+  var al=Object.keys(ARCHETYPES).map(function(k){return '- '+k+': trigger='+ARCHETYPES[k].trigger+' / peur='+ARCHETYPES[k].peur+' / version_peur='+ARCHETYPES[k].version_peur;}).join('\n');
+  var t=statTimer('st-sub1',['Lecture du marché...','Détection des profils...','Analyse des fissures...']);
+
+  var prompt='Tu es expert Moment Troc (Duhigg + Maslow).\n\nNote importante: Le Protecteur est la version peur de tous les autres archétypes — quand un prospect est dominé par la peur de perdre plutôt que le désir de gagner.\n\nArchétypes:\n'+al+'\n\nBusiness: '+S.studio.biz+'\n'+(S.studio.douleur?'Douleur: '+S.studio.douleur+'\n':'')+'\nIdentifie 2-3 archétypes dominants ET précise si chaque profil est en mode désir ou mode peur.\nRéponds:\nARCHETYPES: [nom1 (désir/peur), nom2 (désir/peur)]\nANALYSE: [3-4 phrases — masque, déclencheur, fissure de cette cible]';
+
+  try{
+    var r=await callGemini(prompt,700);
+    clearInterval(t);
+    var am=r.match(/ARCHETYPES:\s*(.+)/i);
+    var an=r.match(/ANALYSE:\s*([\s\S]+)/i);
+    S.studio.profils=am?am[1].split(',').map(function(s){return s.trim();}):['Élévateur (désir)'];
+    hide('st-load1');show('st-profils');
+    var tags=document.getElementById('st-tags');tags.innerHTML='';
+    S.studio.profils.forEach(function(p){var tg=document.createElement('span');tg.className='profil-tag';tg.textContent=p;tags.appendChild(tg);});
+    txt('st-reasoning',an?an[1].trim():r);
+    stRenderEtapes();show('st-etape-card');show('st-actions2');
+  }catch(e){clearInterval(t);hide('st-load1');err('st-err1',e.message);show('st-err1');show('st-actions2');}
+};
+
+window.studioGenerer=async function(){
+  if(!S.studio.etape)return;
+  hide('st-step2');show('st-step3');
+  show('st-load3');hide('st-result');hide('st-err3');hide('st-actions3');hide('st-eval');
+
+  var ei=ETAPES.find(function(e){return e.id===S.studio.etape;});
+  var pd=S.studio.profils.map(function(p){
+    var k=p.replace(/\s*\(.*\)/,'').trim();
+    var a=ARCHETYPES[k];
+    return a?p+' — hook: "'+a.hook+'" / fissure: '+a.fissure:p;
+  }).join('\n');
+
+  var t=statTimer('st-sub3',['Construction des hooks...','Injection style Wil Aime...','Calibration miroir brutal...','Rédaction des posts...','Auto-évaluation...','Correction angles morts...']);
+
+  var main='Tu es le Studio Moment Troc — agent de contenu expert.\n\nPHILOSOPHIE: "Vendre c\'est pas convaincre. C\'est reconnaître."\nNIVEAUX: Masque → Déclencheur → Fissure → Reconstruction\n\n'+WIL_AIME+'\n\n'+DIVIN+'\n\n'+MIROIR+'\n\nBUSINESS: '+S.studio.biz+'\n'+(S.studio.idee?'IDÉE: '+S.studio.idee+'\n':'')+(S.studio.douleur?'DOULEUR: '+S.studio.douleur+'\n':'')+'\nPROFILS:\n'+pd+'\nÉTAPE: '+ei.name+' — '+ei.desc+'\n\nGénère 5 posts avec les 3 intentions:\n- 2 posts ÉMOTION/MIROIR: '+INTENTIONS.emotion+'\n- 2 posts VALEUR BRUTE: '+INTENTIONS.valeur+'\n- 1 post CURIOSITÉ/SUSPENSE: '+INTENTIONS.curiosite+'\n\nRÈGLES ABSOLUES:\n- Une seule intention par post — jamais mélanger\n- Phrases ultra-courtes sauf posts émotionnels\n- Jamais de marketing visible\n- Miroir brutal — la vérité même quand ça fait mal\n- Pour les posts émotionnels: commence par "il" puis bascule vers "tu"\n- Fin ouverte ou affirmation qui tranche selon l\'intention\n- Le sujet sort toujours du produit réel — pas de généralité\n\nFORMAT STRICT:\nPOST [n]\nINTENTION: [Émotion Miroir / Valeur Brute / Curiosité Suspense]\nARCHETYPE: [profil ciblé]\n---\n[contenu]\n===';
+
+  var evalP='Tu es évaluateur expert Moment Troc + Wil Aime.\nÉvalue ces 5 posts:\n1. Chaque post a-t-il UNE SEULE intention claire ?\n2. Les posts Émotion/Miroir basculent-ils vraiment de "il" vers "tu" ?\n3. Les posts Valeur Brute sont-ils secs et autoritaires sans histoire ?\n4. Le post Curiosité/Suspense est-il vraiment incomplet et court ?\n5. Y a-t-il des angles morts — des vérités plus fortes qu\'on aurait dû dire ?\nSi tout est satisfaisant: VALIDE\nSinon: AMÉLIORER\n[version corrigée même format]';
+
+  try{
+    var res=await callWithEval(main,evalP,3000);
+    clearInterval(t);
+    var posts=stParse(res.content,ei);
+    if(!posts.length)throw new Error('Aucun post généré. Réessaie.');
+    S._stPosts=posts;
+    hide('st-load3');show('st-result');
+    if(res.improved)show('st-eval');
+    stRenderPosts(posts);stRenderCal(posts);show('st-actions3');
+  }catch(e){clearInterval(t);hide('st-load3');err('st-err3',e.message);show('st-err3');show('st-actions3');}
+};
+
+function stParse(raw,ei){
+  var posts=[];
+  var blocks=raw.split(/POST\s*\d+/i).filter(function(b){return b.trim();});
+  blocks.forEach(function(block){
+    var im=block.match(/INTENTION:\s*(.+)/i);
+    var am=block.match(/ARCHETYPE:\s*(.+)/i);
+    var cm=block.match(/---\s*([\s\S]+?)(?:===|$)/);
+    posts.push({
+      etape:ei.name,
+      intention:im?im[1].trim():'',
+      archetype:am?am[1].trim():S.studio.profils[0]||'',
+      content:cm?cm[1].trim():block.replace(/INTENTION:.*\n|ARCHETYPE:.*\n|---/g,'').trim()
+    });
+  });
+  return posts;
+}
+
+function stRenderPosts(posts){
+  var list=document.getElementById('st-posts');list.innerHTML='';
+  posts.forEach(function(p,i){
+    var d=document.createElement('div');d.className='post-item';d.style.animationDelay=(i*0.08)+'s';
+    var intentionClass=p.intention.toLowerCase().includes('valeur')?'ptag-ink':p.intention.toLowerCase().includes('curiosit')?'ptag-rust':'';
+    d.innerHTML='<div class="post-header"><div class="post-tags"><span class="ptag ptag-rust">J'+(i*6+1)+'</span><span class="ptag">'+esc(p.etape)+'</span><span class="ptag '+intentionClass+'">'+esc(p.intention)+'</span><span class="ptag">'+esc(p.archetype)+'</span></div></div><div class="post-body">'+esc(p.content)+'</div><div class="post-footer"><span class="post-num">Post '+(i+1)+' / 5</span><button class="copy-btn" onclick="stCp(this,'+i+')">Copier</button></div>';
+    list.appendChild(d);
+  });
+}
+
+function stRenderCal(posts){
+  var cal=document.getElementById('st-cal');cal.innerHTML='';
+  var days=posts.map(function(p,i){return i*6+1;});
+  for(var d=1;d<=28;d++){
+    var c=document.createElement('div');c.className='cal-cell';
+    var idx=days.indexOf(d);
+    if(idx!==-1){c.classList.add('has');c.innerHTML='<span>'+d+'</span><div class="cal-pn">P'+(idx+1)+'</div>';}
+    else c.innerHTML='<span>'+d+'</span>';
+    cal.appendChild(c);
+  }
+}
+
+window.stCp=function(btn,i){cp(S._stPosts[i].content,btn);};
+window.studioBack=function(s){if(s===1){hide('st-step2');show('st-step1');}else{hide('st-step3');show('st-step2');}};
+window.studioNouvelle=function(){S.studio.etape=null;document.querySelectorAll('#st-etapes .sel-item').forEach(function(b){b.classList.remove('on');});document.getElementById('st-btn-gen').disabled=true;hide('st-step3');show('st-step2');};
+
+// ═══════════════════════════════
+// ═══ TROC KIT ══════════════════
+// ═══════════════════════════════
+window.selCanal=function(btn,c){document.querySelectorAll('#tk-step1 .sel-item').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');S.trockit.canal=c;};
+
+window.trocKitGen=async function(){
+  var prospect=document.getElementById('tk-prospect').value.trim();
+  var produit=document.getElementById('tk-produit').value.trim();
+  var objection=document.getElementById('tk-objection').value.trim();
+  if(!prospect||!produit)return;
+  if(!S.trockit.canal){alert('Choisis un canal');return;}
+
+  hide('tk-step1');show('tk-step2');
+  show('tk-load');hide('tk-result');hide('tk-err');hide('tk-actions');hide('tk-eval');
+
+  var t=statTimer('tk-sub',['Détection archétype...','Analyse psychologique...','Construction du script...','Anticipation objections...','Auto-évaluation...']);
+
+  var al=Object.keys(ARCHETYPES).map(function(k){return k+': '+ARCHETYPES[k].trigger;}).join(' | ');
+
+  var main='Tu es expert Moment Troc en psychologie d\'achat.\n\nNote: Le Protecteur est la version peur de tous les autres archétypes.\nArchétypes: '+al+'\n\nPROSPECT: '+prospect+'\nPRODUIT: '+produit+'\nCANAL: '+S.trockit.canal+'\n'+(objection?'OBJECTION: '+objection+'\n':'')+'\nGénère un script de vente complet calibré sur cet archétype.\n\nFORMAT:\nARCHETYPE_DETECTE: [archétype + mode désir/peur + justification courte]\n\nPREMIER_MESSAGE:\n[message naturel calibré pour ce canal — jamais commercial]\n\nRELANCE:\n[message 24h sans réponse]\n\nGESTION_OBJECTION:\n[réponse qui utilise la psychologie du profil — pas d\'argumentation]\n\nCLOSING:\n[phrase exacte pour conclure — courte, sans pression]\n\nERREURS_A_EVITER:\n[3 erreurs qui tuent la vente avec ce profil]\n\nRÈGLES: Registre "tu", naturel, jamais de marketing visible, phrases courtes.';
+
+  var evalP='Tu es évaluateur Moment Troc.\nÉvalue ce script:\n1. Le premier message est-il vraiment naturel pour ce canal ?\n2. La gestion objection utilise-t-elle la psychologie du profil ou c\'est générique ?\n3. Y a-t-il des angles morts — des approches plus efficaces ?\n4. Le closing crée-t-il une tension sans pression ?\nSi satisfaisant: VALIDE\nSinon: AMÉLIORER\n[version corrigée même format]';
+
+  try{
+    var res=await callWithEval(main,evalP,2000);
+    clearInterval(t);
+    hide('tk-load');show('tk-result');
+    if(res.improved)show('tk-eval');
+    tkRender(res.content);show('tk-actions');
+  }catch(e){clearInterval(t);hide('tk-load');err('tk-err',e.message);show('tk-err');show('tk-actions');}
+};
+
+function tkRender(raw){
+  var am=raw.match(/ARCHETYPE_DETECTE:\s*(.+)/i);
+  if(am){var t=document.getElementById('tk-arch');t.innerHTML='<span class="profil-tag">'+esc(am[1].trim())+'</span>';}
+  var secs=[{k:'PREMIER_MESSAGE',l:'Premier Message'},{k:'RELANCE',l:'Relance (24h)'},{k:'GESTION_OBJECTION',l:'Gestion Objection'},{k:'CLOSING',l:'Closing'},{k:'ERREURS_A_EVITER',l:'Erreurs à Éviter'}];
+  var c=document.getElementById('tk-scripts');c.innerHTML='';S._tkTexts={};
+  secs.forEach(function(s,i){
+    var rx=new RegExp(s.k+':\\s*([\\s\\S]+?)(?=(?:'+secs.map(function(x){return x.k;}).join('|')+'):|$)','i');
+    var m=raw.match(rx);
+    if(m){
+      S._tkTexts[i]=m[1].trim();
+      var d=document.createElement('div');d.className='script-block';
+      d.innerHTML='<div class="script-label">'+s.l+'</div><div class="script-body">'+esc(m[1].trim())+'<button class="script-copy" onclick="tkCp(this,'+i+')">Copier</button></div>';
+      c.appendChild(d);
     }
+  });
+}
+window.tkCp=function(btn,i){cp(S._tkTexts[i],btn);};
+window.trocKitBack=function(){hide('tk-step2');show('tk-step1');};
 
-    // Fonction de vérification de clé
-    window.verifierCle = function() {
-      console.log('verifierCle appelée'); // Pour débogage
-      const input = document.getElementById('key-input');
-      const errorDiv = document.getElementById('key-error');
-      const cleSaisie = input.value.trim().toUpperCase();
-      
-      errorDiv.style.display = 'none';
-      
-      if (!VALID_KEYS.has(cleSaisie)) {
-        errorDiv.style.display = 'block';
-        errorDiv.textContent = 'Clé invalide.';
-        console.warn('Clé invalide :', cleSaisie);
-        return;
-      }
-      
-      const storedLicense = localStorage.getItem(STORAGE_KEY);
-      const currentDeviceId = generateDeviceId();
-      
-      if (storedLicense) {
-        const licenseData = JSON.parse(storedLicense);
-        if (licenseData.key === cleSaisie && licenseData.deviceId === currentDeviceId) {
-          console.log('Accès autorisé (licence existante)');
-          document.getElementById('key-gate').style.display = 'none';
-        } else {
-          errorDiv.style.display = 'block';
-          errorDiv.textContent = 'Cette clé est déjà utilisée sur un autre appareil.';
-          console.warn('Clé déjà utilisée sur un autre appareil');
-        }
+// ═══════════════════════════════
+// ═══ CONTENT SPRINT ════════════
+// ═══════════════════════════════
+window.selSprint=function(btn,o){document.querySelectorAll('#sp-step1 .sel-item').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');S.sprint.objectif=o;};
+
+window.sprintGen=async function(){
+  var biz=document.getElementById('sp-biz').value.trim();
+  var arch=document.getElementById('sp-arch').value.trim();
+  if(!biz)return;if(!S.sprint.objectif){alert('Choisis un objectif');return;}
+
+  hide('sp-step1');show('sp-step2');
+  show('sp-load');hide('sp-result');hide('sp-err');hide('sp-actions');hide('sp-eval');
+
+  var t=statTimer('sp-sub',['Planification du mois...','Semaine 1 — Notoriété...','Semaine 2 — Valeur...','Semaine 3 — Tension...','Semaine 4 — Closing...','Auto-évaluation...'],1800);
+
+  var main='Tu es le Studio Moment Troc — agent Content Sprint.\n\n'+WIL_AIME+'\n\n'+DIVIN+'\n\n'+MIROIR+'\n\nBUSINESS: '+biz+'\nOBJECTIF: '+S.sprint.objectif+'\n'+(arch?'ARCHÉTYPE: '+arch+'\n':'')+'\nGénère un plan éditorial de 30 jours avec 15 posts complets (1 tous les 2 jours).\n\nPROGRESSION:\n- Semaine 1 (J1-J8): Notoriété + accroche — posts Curiosité/Suspense dominants\n- Semaine 2 (J9-J15): Valeur + preuve — posts Valeur Brute dominants\n- Semaine 3 (J16-J22): Tension + désir — posts Émotion/Miroir dominants\n- Semaine 4 (J23-J30): Closing + réassurance — mix des 3 intentions\n\nMix d\'intentions: respecte les 3 intentions (Valeur Brute / Émotion Miroir / Curiosité Suspense). Ne jamais mélanger dans un même post.\n\nFORMAT pour chaque post:\nPOST [n] — JOUR [j]\nINTENTION: [intention]\nTYPE: [Concept/Histoire/Trigger/Preuve]\nARCHETYPE: [archétype]\n---\n[contenu complet]\n===\n\nRÈGLES: Phrases courtes, miroir brutal, jamais de marketing visible.';
+
+  var evalP='Évalue ce plan 30 jours:\n1. La progression semaine par semaine est-elle cohérente ?\n2. Y a-t-il un bon mix des 3 intentions ?\n3. Les posts construisent-ils vraiment vers la vente ?\n4. Angles morts — semaines trop faibles ?\nSi satisfaisant: VALIDE\nSinon: AMÉLIORER\n[plan corrigé même format]';
+
+  try{
+    var res=await callWithEval(main,evalP,4000);
+    clearInterval(t);
+    var posts=spParse(res.content);
+    if(!posts.length)throw new Error('Aucun post généré.');
+    S._spPosts=posts;
+    hide('sp-load');show('sp-result');
+    if(res.improved)show('sp-eval');
+    spRender(posts);spCal(posts);show('sp-actions');
+  }catch(e){clearInterval(t);hide('sp-load');err('sp-err',e.message);show('sp-err');show('sp-actions');}
+};
+
+function spParse(raw){
+  var posts=[];
+  var blocks=raw.split(/POST\s*\d+/i).filter(function(b){return b.trim();});
+  blocks.forEach(function(block,i){
+    var jm=block.match(/JOUR\s*(\d+)/i);
+    var im=block.match(/INTENTION:\s*(.+)/i);
+    var tm=block.match(/TYPE:\s*(.+)/i);
+    var am=block.match(/ARCHETYPE:\s*(.+)/i);
+    var cm=block.match(/---\s*([\s\S]+?)(?:===|$)/);
+    posts.push({jour:jm?parseInt(jm[1]):i*2+1,intention:im?im[1].trim():'',type:tm?tm[1].trim():'',archetype:am?am[1].trim():'',content:cm?cm[1].trim():block.replace(/JOUR.*\n|INTENTION:.*\n|TYPE:.*\n|ARCHETYPE:.*\n|---/g,'').trim()});
+  });
+  return posts;
+}
+
+function spRender(posts){
+  var list=document.getElementById('sp-posts');list.innerHTML='';
+  posts.forEach(function(p,i){
+    var d=document.createElement('div');d.className='post-item';d.style.animationDelay=(i*0.05)+'s';
+    d.innerHTML='<div class="post-header"><div class="post-tags"><span class="ptag ptag-rust">J'+p.jour+'</span><span class="ptag">'+esc(p.intention)+'</span><span class="ptag">'+esc(p.archetype)+'</span></div></div><div class="post-body">'+esc(p.content)+'</div><div class="post-footer"><span class="post-num">Post '+(i+1)+' / 15</span><button class="copy-btn" onclick="spCp(this,'+i+')">Copier</button></div>';
+    list.appendChild(d);
+  });
+}
+
+function spCal(posts){
+  var cal=document.getElementById('sp-cal');cal.innerHTML='';
+  var days=posts.map(function(p){return p.jour;});
+  for(var d=1;d<=30;d++){
+    var c=document.createElement('div');c.className='cal-cell';
+    var idx=days.indexOf(d);
+    if(idx!==-1){c.classList.add('has');c.innerHTML='<span>'+d+'</span><div class="cal-pn">P'+(idx+1)+'</div>';}
+    else c.innerHTML='<span>'+d+'</span>';
+    cal.appendChild(c);
+  }
+}
+window.spCp=function(btn,i){cp(S._spPosts[i].content,btn);};
+window.sprintBack=function(){hide('sp-step2');show('sp-step1');};
+
+// ═══════════════════════════════
+// ═══ DIAGNOSTIC ════════════════
+// ═══════════════════════════════
+window.diagGen=async function(){
+  var activite=document.getElementById('d-activite').value.trim();
+  var resultats=document.getElementById('d-resultats').value.trim();
+  var concurrents=document.getElementById('d-concurrents').value.trim();
+  var force=document.getElementById('d-force').value.trim();
+  var frustration=document.getElementById('d-frustration').value.trim();
+  if(!activite||!resultats||!concurrents)return;
+
+  hide('d-step1');show('d-step2');
+  show('d-load');hide('d-result');hide('d-err');hide('d-actions');hide('d-eval');
+
+  var t=statTimer('d-sub',['Analyse du positionnement...','Détection angles morts...','Analyse concurrentielle...','Forge de l\'avantage...','Auto-évaluation...']);
+
+  var al=Object.keys(ARCHETYPES).map(function(k){return k+': '+ARCHETYPES[k].trigger;}).join(' | ');
+
+  var main='Tu es consultant stratégique expert Moment Troc.\n\nPhilosophie: "Vendre c\'est pas convaincre. C\'est reconnaître."\nArchétypes: '+al+'\nNote: Le Protecteur est la version peur de tous les autres.\n\nACTIVITÉ: '+activite+'\nRÉSULTATS: '+resultats+'\nCONCURRENTS: '+concurrents+'\n'+(force?'FORCE PERÇUE: '+force+'\n':'')+(frustration?'FRUSTRATION: '+frustration+'\n':'')+'\nGénère un diagnostic stratégique complet et précis — pas générique.\n\nFORMAT:\nARCHETYPE_PRINCIPAL: [archétype dominant + mode désir/peur + justification]\n\nPOSITIONNEMENT_ACTUEL: [comment il se positionne vraiment vs comment il pense se positionner — sois brutal]\n\nANGLES_MORTS: [3-5 angles morts SPÉCIFIQUES à sa situation — pas génériques]\n\nAVANTAGE_COMPARATIF: [son vrai avantage unique révélé par l\'analyse — pas ce qu\'il croit]\n\nSTRATEGIE_IMMEDIATE: [3 actions concrètes et spécifiques à faire cette semaine]\n\nMESSAGE_CLE: [la phrase courte et forte qui résume son positionnement réel]';
+
+  var evalP='Tu es évaluateur stratégique.\nÉvalue ce diagnostic:\n1. Les angles morts sont-ils spécifiques ou génériques ?\n2. L\'avantage comparatif est-il vraiment différenciant ?\n3. Les actions sont-elles réellement faisables cette semaine ?\n4. Y a-t-il des contradictions ?\nSi satisfaisant: VALIDE\nSinon: AMÉLIORER\n[diagnostic corrigé même format]';
+
+  try{
+    var res=await callWithEval(main,evalP,2500);
+    clearInterval(t);
+    hide('d-load');show('d-result');
+    if(res.improved)show('d-eval');
+    dRender(res.content);show('d-actions');
+  }catch(e){clearInterval(t);hide('d-load');err('d-err',e.message);show('d-err');show('d-actions');}
+};
+
+function dRender(raw){
+  var secs=[
+    {k:'ARCHETYPE_PRINCIPAL',l:'Archétype Principal',rust:true},
+    {k:'POSITIONNEMENT_ACTUEL',l:'Positionnement Actuel'},
+    {k:'ANGLES_MORTS',l:'Angles Morts',danger:true},
+    {k:'AVANTAGE_COMPARATIF',l:'Avantage Comparatif',rust:true},
+    {k:'STRATEGIE_IMMEDIATE',l:'Stratégie Immédiate'},
+    {k:'MESSAGE_CLE',l:'Message Clé',rust:true}
+  ];
+  var c=document.getElementById('d-sections');c.innerHTML='';
+  secs.forEach(function(s,i){
+    var rx=new RegExp(s.k+':\\s*([\\s\\S]+?)(?=(?:'+secs.map(function(x){return x.k;}).join('|')+'):|$)','i');
+    var m=raw.match(rx);
+    if(m){
+      var text=m[1].trim();
+      var d=document.createElement('div');d.className='diag-block';
+      var color=s.rust?'color:var(--rust)':'';
+      if(s.danger){
+        d.innerHTML='<div class="diag-title" style="'+color+'">'+s.l+'</div><div class="angle-bloc"><div class="angle-label">Zones non vues</div><div class="angle-body">'+esc(text)+'</div></div>';
       } else {
-        const licenseData = {
-          key: cleSaisie,
-          deviceId: currentDeviceId,
-          activatedAt: new Date().toISOString()
-        };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(licenseData));
-        console.log('Première activation, licence enregistrée');
-        document.getElementById('key-gate').style.display = 'none';
+        d.innerHTML='<div class="diag-title" style="'+color+'">'+s.l+'</div><div class="diag-body">'+esc(text)+'</div>';
       }
-    };
-
-    // ---------- LOGIQUE APPLICATIVE ----------
-    let currentStep = 1;
-    let selectedEtape = null;
-    let profilsDetected = [];
-    let postsGenerated = [];
-
-    const ETAPES = [
-      { id: 'awareness', name: 'Prise de conscience', desc: 'Faire réaliser le problème, poser la tension.' },
-      { id: 'education', name: 'Éducation', desc: 'Expliquer les mécanismes, challenger les croyances.' },
-      { id: 'desir', name: 'Désir', desc: 'Créer l’envie de transformation, montrer le chemin.' },
-      { id: 'action', name: 'Passage à l’action', desc: 'Déclencher la décision, offrir une porte.' }
-    ];
-
-    const PROFILS_MOCK = [
-      { nom: 'Le Visionnaire', keywords: ['innovation','futur','changer','créer'] },
-      { nom: 'L\'Artisan', keywords: ['fait main','artisan','qualité','savoir-faire'] },
-      { nom: 'Le Guide', keywords: ['accompagner','coach','aider','transformation'] },
-      { nom: 'Le Rebelle', keywords: ['casser','différent','osé','rupture'] }
-    ];
-
-    function setStep(step) {
-      currentStep = step;
-      document.getElementById('step1').classList.toggle('hidden', step !== 1);
-      document.getElementById('step2').classList.toggle('hidden', step !== 2);
-      document.getElementById('step3').classList.toggle('hidden', step !== 3);
-      
-      const dot1 = document.getElementById('dot1');
-      const dot2 = document.getElementById('dot2');
-      const dot3 = document.getElementById('dot3');
-      const line1 = document.getElementById('line1');
-      const line2 = document.getElementById('line2');
-      
-      dot1.classList.remove('active','done');
-      dot2.classList.remove('active','done');
-      dot3.classList.remove('active','done');
-      line1.classList.remove('done');
-      line2.classList.remove('done');
-      
-      if (step === 1) dot1.classList.add('active');
-      else if (step === 2) { dot1.classList.add('done'); dot2.classList.add('active'); line1.classList.add('done'); }
-      else if (step === 3) { dot1.classList.add('done'); dot2.classList.add('done'); dot3.classList.add('active'); line1.classList.add('done'); line2.classList.add('done'); }
+      c.appendChild(d);
+      if(i<secs.length-1){var sep=document.createElement('div');sep.className='section-break';sep.innerHTML='<span></span>';c.appendChild(sep);}
     }
+  });
+}
+window.diagBack=function(){hide('d-step2');show('d-step1');};
 
-    window.goBack = function(targetStep) { setStep(targetStep); };
+// ═══════════════════════════════
+// INIT
+// ═══════════════════════════════
+window.addEventListener('DOMContentLoaded',function(){
+  var saved=localStorage.getItem('mt_k');
+  setTimeout(function(){
+    document.getElementById('loader').style.display='none';
+    if(!saved||(saved!==MASTER&&KEYS.indexOf(saved)===-1)){
+      document.getElementById('keygate').style.display='flex';
+    }
+  },1800);
+});
 
-    window.analyserProfils = function() {
-      const business = document.getElementById('input-business').value.trim();
-      if (!business) { alert('Le champ "business ou produit" est requis.'); return; }
-      
-      setStep(2);
-      document.getElementById('loading-profils').classList.remove('hidden');
-      document.getElementById('profils-result').classList.add('hidden');
-      document.getElementById('etape-card').classList.add('hidden');
-      document.getElementById('step2-actions').classList.add('hidden');
-      
-      setTimeout(() => {
-        const businessLower = business.toLowerCase();
-        let scores = PROFILS_MOCK.map(p => {
-          let score = 0;
-          p.keywords.forEach(kw => { if (businessLower.includes(kw.toLowerCase())) score += 2; });
-          score += Math.floor(Math.random() * 3);
-          return { nom: p.nom, score };
-        });
-        scores.sort((a,b) => b.score - a.score);
-        profilsDetected = scores.slice(0, 2);
-        
-        document.getElementById('profils-tags').innerHTML = profilsDetected.map(p => `
-          <div class="profil-tag">${p.nom}<span class="profil-score">score ${p.score}</span></div>
-        `).join('');
-        document.getElementById('profil-reasoning-text').innerHTML = `<p>D'après ton univers, deux archétypes dominent. Le contenu sera teinté de ${profilsDetected[0].nom.toLowerCase()} avec une influence ${profilsDetected[1].nom.toLowerCase()}.</p>`;
-        
-        const grid = document.getElementById('etapes-grid');
-        grid.innerHTML = ETAPES.map((e, i) => `
-          <div class="etape-btn" data-id="${e.id}" onclick="selectEtape('${e.id}')">
-            <div class="etape-num">0${i+1}</div>
-            <div class="etape-name">${e.name}</div>
-            <div class="etape-desc">${e.desc}</div>
-          </div>
-        `).join('');
-        
-        document.getElementById('loading-profils').classList.add('hidden');
-        document.getElementById('profils-result').classList.remove('hidden');
-        document.getElementById('etape-card').classList.remove('hidden');
-        document.getElementById('step2-actions').classList.remove('hidden');
-        selectedEtape = null;
-      }, 1500);
-    };
-
-    window.selectEtape = function(etapeId) {
-      selectedEtape = etapeId;
-      document.querySelectorAll('.etape-btn').forEach(btn => {
-        btn.classList.remove('selected');
-        if (btn.dataset.id === etapeId) btn.classList.add('selected');
-      });
-    };
-
-    window.genererSerie = function() {
-      if (!selectedEtape) { alert('Sélectionne une étape.'); return; }
-      
-      setStep(3);
-      document.getElementById('loading-posts').classList.remove('hidden');
-      document.getElementById('posts-result').classList.add('hidden');
-      
-      const business = document.getElementById('input-business').value;
-      const mots = document.getElementById('input-mots').value || 'signal, racine';
-      const douleur = document.getElementById('input-douleur').value || 'peur de stagner';
-      
-      setTimeout(() => {
-        const etapeObj = ETAPES.find(e => e.id === selectedEtape);
-        const archetypePrincipal = profilsDetected.length ? profilsDetected[0].nom : 'Le Visionnaire';
-        
-        postsGenerated = [];
-        const baseMessages = [
-          `"${mots.split(',')[0] || 'Signal'}." C'est le mot qui revient quand on parle de ${business.substring(0,30)}.`,
-          `La plupart croient que ${douleur.substring(0,40)}... mais la vérité est ailleurs.`,
-          `En tant qu'${archetypePrincipal}, je vois les choses différemment.`,
-          `Voici comment transformer ${mots.split(',')[1] || 'racine'} en levier.`,
-          `Un client m'a dit : "Je ne savais pas que c'était possible."`,
-          `L'étape "${etapeObj.name}" est cruciale : ${etapeObj.desc}`,
-          `Prêt·e à passer à l'action ? Réponds "OUI" pour la suite.`
-        ];
-        
-        for (let i = 0; i < 7; i++) {
-          let content = baseMessages[i % baseMessages.length];
-          if (i === 0) content = `Jour ${i+1} — ${content}`;
-          else if (i === 6) content = `🔥 ${content} 🔥`;
-          postsGenerated.push({ day: i+1, etape: etapeObj.name, archetype: archetypePrincipal, content });
-        }
-        
-        document.getElementById('posts-list').innerHTML = postsGenerated.map((post, idx) => `
-          <div class="post-item">
-            <div class="post-header">
-              <div class="post-meta">
-                <span class="post-day">Jour ${post.day}</span>
-                <span class="post-etape-tag">${post.etape}</span>
-                <span class="post-archetype">${post.archetype}</span>
-              </div>
-            </div>
-            <div class="post-body">${post.content}</div>
-            <div class="post-footer">
-              <button class="copy-btn" data-index="${idx}" onclick="copierPost(${idx})">📋 Copier</button>
-            </div>
-          </div>
-        `).join('');
-        
-        const calDiv = document.getElementById('calendar-view');
-        let calHtml = '';
-        for (let d = 1; d <= 7; d++) {
-          const postDuJour = postsGenerated.find(p => p.day === d);
-          calHtml += `<div class="cal-day ${postDuJour ? 'has-post' : ''}" ${postDuJour ? `onclick="scrollToPost(${d})"` : ''}>${d}${postDuJour ? '<span class="cal-post-num">post</span>' : ''}</div>`;
-        }
-        calDiv.innerHTML = calHtml;
-        
-        document.getElementById('loading-posts').classList.add('hidden');
-        document.getElementById('posts-result').classList.remove('hidden');
-      }, 1800);
-    };
-
-    window.copierPost = function(index) {
-      const post = postsGenerated[index];
-      if (!post) return;
-      navigator.clipboard.writeText(post.content).then(() => {
-        const btn = event.target;
-        btn.textContent = '✓ Copié';
-        btn.classList.add('copied');
-        setTimeout(() => { btn.textContent = '📋 Copier'; btn.classList.remove('copied'); }, 2000);
-      }).catch(err => alert('Erreur de copie'));
-    };
-
-    window.scrollToPost = function(day) {
-      const postElement = document.querySelector(`.post-item:nth-child(${day})`);
-      if (postElement) postElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    };
-  })();
+})();
 </script>
 </body>
 </html>
